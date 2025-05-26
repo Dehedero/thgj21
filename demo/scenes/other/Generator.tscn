@@ -1,0 +1,63 @@
+[gd_scene load_steps=14 format=3 uid="uid://doqif1otr0lur"]
+
+[ext_resource type="Material" uid="uid://euqiwxxgn8j3" path="res://demo/materials/led_red.material" id="1"]
+[ext_resource type="Script" path="res://demo/scenes/other/Generator.gd" id="2"]
+[ext_resource type="Material" path="res://demo/materials/metal_2.material" id="3"]
+[ext_resource type="ArrayMesh" uid="uid://dk7alkjgaw0sj" path="res://demo/meshes/Generator.obj" id="3_gsc1n"]
+[ext_resource type="Material" uid="uid://4twnvc5yw3i8" path="res://demo/materials/metal_dark_1.material" id="4"]
+[ext_resource type="PackedScene" uid="uid://bnmg0a564wwjp" path="res://addons/goat/main_scenes/InteractiveItem.tscn" id="5"]
+[ext_resource type="AudioStream" uid="uid://bh6t30fvfomah" path="res://demo/sounds/generator.ogg" id="6"]
+[ext_resource type="Material" path="res://demo/materials/plastic_1.material" id="7"]
+[ext_resource type="ArrayMesh" uid="uid://dps6p6qti4bvp" path="res://demo/meshes/Screwdriver.obj" id="7_icmom"]
+[ext_resource type="Material" uid="uid://b00icg50isxgj" path="res://demo/materials/generator_screen.material" id="8"]
+
+[sub_resource type="BoxShape3D" id="1"]
+size = Vector3(0.5, 1.2, 1.6)
+
+[sub_resource type="BoxShape3D" id="4"]
+size = Vector3(0.46114, 1.41039, 1.5932)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jqgpo"]
+size = Vector3(0.162, 0.01, 1.49)
+
+[node name="Generator" type="Node3D"]
+script = ExtResource("2")
+
+[node name="InteractiveItem" parent="." instance=ExtResource("5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.559469, 0)
+unique_name = "generator"
+item_type = 1
+collision_shape = SubResource("1")
+
+[node name="Model" type="MeshInstance3D" parent="InteractiveItem"]
+mesh = ExtResource("3_gsc1n")
+surface_material_override/0 = ExtResource("4")
+surface_material_override/1 = ExtResource("1")
+surface_material_override/2 = ExtResource("8")
+
+[node name="Screwdriver" type="MeshInstance3D" parent="InteractiveItem"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.134, 0.586, -0.63)
+mesh = ExtResource("7_icmom")
+surface_material_override/0 = ExtResource("7")
+surface_material_override/1 = ExtResource("3")
+
+[node name="StaticBody" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape" type="CollisionShape3D" parent="StaticBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.677863, 0)
+shape = SubResource("4")
+
+[node name="WorkingSound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("6")
+volume_db = -16.0
+unit_size = 1.0
+bus = &"GoatEffects"
+
+[node name="GeneratorSurface" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.104206, 1.08372, 0)
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GeneratorSurface"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.011238, 0, 0)
+shape = SubResource("BoxShape3D_jqgpo")

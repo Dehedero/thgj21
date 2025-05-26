@@ -1,0 +1,368 @@
+[gd_scene load_steps=48 format=3 uid="uid://bwkl82vicm0vv"]
+
+[ext_resource type="Material" path="res://demo/materials/walls.material" id="1"]
+[ext_resource type="Material" uid="uid://c5lpeipmutbb7" path="res://demo/materials/floor.material" id="2"]
+[ext_resource type="Material" path="res://demo/materials/darkness.material" id="3"]
+[ext_resource type="PackedScene" uid="uid://cfbl4socwdaqe" path="res://demo/scenes/other/CeilingFan.tscn" id="4"]
+[ext_resource type="Material" path="res://demo/materials/lamp.material" id="5"]
+[ext_resource type="Material" path="res://demo/materials/rubber.material" id="6"]
+[ext_resource type="PackedScene" uid="uid://p7fns4752pti" path="res://demo/meshes/WorkshopFull.glb" id="16_6fjsk"]
+[ext_resource type="Material" path="res://demo/materials/metal_1.material" id="17_ne3qs"]
+[ext_resource type="Material" path="res://demo/materials/paper.material" id="18"]
+[ext_resource type="Material" path="res://demo/materials/metal_dark_3.material" id="18_t0g3g"]
+[ext_resource type="Material" path="res://demo/materials/metal_3.material" id="19_uc5e7"]
+[ext_resource type="Material" path="res://demo/materials/plastic_red.material" id="21_mg5sj"]
+[ext_resource type="PackedScene" uid="uid://doqif1otr0lur" path="res://demo/scenes/other/Generator.tscn" id="22"]
+[ext_resource type="Material" path="res://demo/materials/plastic_3.material" id="22_eypaf"]
+[ext_resource type="PackedScene" uid="uid://csweohnkw3p3y" path="res://demo/scenes/other/Desk.tscn" id="23"]
+[ext_resource type="Material" path="res://demo/materials/metal_dark_2.material" id="23_givgj"]
+[ext_resource type="Material" path="res://demo/materials/plastic_1.material" id="23_kjmfi"]
+[ext_resource type="PackedScene" uid="uid://dre8nrrhjj83j" path="res://demo/scenes/other/Shelf2.tscn" id="24"]
+[ext_resource type="PackedScene" uid="uid://d231l5hpiajco" path="res://demo/scenes/other/Shelf1.tscn" id="25"]
+[ext_resource type="Material" path="res://demo/materials/plastic_2.material" id="25_cl330"]
+[ext_resource type="PackedScene" uid="uid://dt6y2o6000spv" path="res://demo/scenes/other/WallDevice.tscn" id="26"]
+[ext_resource type="Material" uid="uid://euqiwxxgn8j3" path="res://demo/materials/led_red.material" id="26_ifiim"]
+[ext_resource type="PackedScene" uid="uid://cgy7d3si143cf" path="res://demo/scenes/other/Portal.tscn" id="27"]
+[ext_resource type="Material" path="res://demo/materials/metal_2.material" id="27_56gn3"]
+[ext_resource type="PackedScene" uid="uid://cu0h1sgvx6e4j" path="res://addons/goat/main_scenes/DetailedInteraction.tscn" id="28"]
+[ext_resource type="Material" path="res://demo/materials/wood.material" id="28_ch63u"]
+[ext_resource type="Environment" uid="uid://mr87rfxow7wc" path="res://demo/environments/workshop_environment.tres" id="29"]
+[ext_resource type="Material" path="res://demo/materials/material_2.material" id="29_0dipg"]
+[ext_resource type="Material" path="res://demo/materials/material_1.material" id="30_pd3oh"]
+[ext_resource type="PackedScene" uid="uid://d3w6yrmkg14h2" path="res://demo/scenes/other/Door.tscn" id="31"]
+[ext_resource type="Material" uid="uid://4twnvc5yw3i8" path="res://demo/materials/metal_dark_1.material" id="31_m8h3e"]
+
+[sub_resource type="BoxShape3D" id="44"]
+size = Vector3(2.662, 1.514, 0.2)
+
+[sub_resource type="ConvexPolygonShape3D" id="4"]
+points = PackedVector3Array(-5, -2.5, 0, -5, 2.5, 0, 5, 2.5, 0, -5, -2.5, 0, 5, 2.5, 0, 5, -2.5, 0)
+
+[sub_resource type="QuadMesh" id="45"]
+size = Vector2(10, 5)
+
+[sub_resource type="QuadMesh" id="3"]
+size = Vector2(10, 5)
+
+[sub_resource type="ConvexPolygonShape3D" id="5"]
+points = PackedVector3Array(-5, -2.5, 0, -5, 2.5, 0, 5, 2.5, 0, -5, -2.5, 0, 5, 2.5, 0, 5, -2.5, 0)
+
+[sub_resource type="PlaneMesh" id="6"]
+material = ExtResource("2")
+size = Vector2(8, 8)
+
+[sub_resource type="SphereMesh" id="7"]
+material = ExtResource("5")
+radius = 0.1
+height = 0.2
+radial_segments = 12
+rings = 6
+
+[sub_resource type="CylinderMesh" id="8"]
+material = ExtResource("6")
+top_radius = 0.04
+bottom_radius = 0.04
+height = 0.2
+radial_segments = 6
+rings = 1
+
+[sub_resource type="CylinderMesh" id="9"]
+material = ExtResource("6")
+top_radius = 0.01
+bottom_radius = 0.01
+height = 1.0
+radial_segments = 4
+rings = 1
+
+[sub_resource type="StandardMaterial3D" id="41"]
+albedo_color = Color(0.301961, 0.301961, 0.301961, 1)
+metallic_specular = 0.0
+
+[sub_resource type="BoxMesh" id="42"]
+material = SubResource("41")
+size = Vector3(16, 4, 1)
+
+[sub_resource type="BoxMesh" id="43"]
+material = SubResource("41")
+size = Vector3(3, 6, 1)
+
+[sub_resource type="QuadMesh" id="2"]
+material = ExtResource("3")
+size = Vector2(20, 20)
+
+[sub_resource type="BoxShape3D" id="40"]
+size = Vector3(4.46094, 0.4784, 7.9581)
+
+[sub_resource type="BoxShape3D" id="32"]
+size = Vector3(0.661, 0.647, 0.876)
+
+[sub_resource type="BoxShape3D" id="14"]
+size = Vector3(0.497, 0.487, 0.871)
+
+[node name="Workshop" type="Node3D"]
+
+[node name="DetailedInteractionTools" parent="." instance=ExtResource("28")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -2.5, 2.366, 0.812)
+
+[node name="InteractiveItem" parent="DetailedInteractionTools" index="0"]
+collision_shape = SubResource("44")
+
+[node name="DetailedInteractionNote" parent="." instance=ExtResource("28")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 1.694, 1.55, 3.397)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." groups=["goat_environments"]]
+environment = ExtResource("29")
+
+[node name="Model" type="MeshInstance3D" parent="."]
+
+[node name="NewWall1" type="CSGCombiner3D" parent="Model"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 3.62874, 2.20824, 1.54988)
+material_override = ExtResource("1")
+operation = 2
+
+[node name="StaticBody" type="StaticBody3D" parent="Model/NewWall1"]
+
+[node name="CollisionShape" type="CollisionShape3D" parent="Model/NewWall1/StaticBody"]
+shape = SubResource("4")
+
+[node name="Surface" type="CSGMesh3D" parent="Model/NewWall1"]
+material_override = ExtResource("1")
+mesh = SubResource("45")
+
+[node name="Hole" type="CSGBox3D" parent="Model/NewWall1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, -0.704, 0)
+operation = 2
+size = Vector3(0.5, 0.5, 0.5)
+
+[node name="NewWall2" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 1.55906, 2.20824, 3.42766)
+mesh = SubResource("3")
+skeleton = NodePath("")
+surface_material_override/0 = ExtResource("1")
+
+[node name="StaticBody" type="StaticBody3D" parent="Model/NewWall2"]
+
+[node name="CollisionShape" type="CollisionShape3D" parent="Model/NewWall2/StaticBody"]
+shape = SubResource("5")
+
+[node name="Sun" type="DirectionalLight3D" parent="Model"]
+transform = Transform3D(-0.819783, -0.0662066, 0.568834, -0.0205513, 0.996056, 0.0863132, -0.572305, 0.0590678, -0.817911, 0, 1.81376, 0)
+light_color = Color(0.960784, 0.843137, 0.388235, 1)
+light_energy = 4.0
+shadow_enabled = true
+shadow_bias = 0.9
+directional_shadow_split_1 = 0.08
+directional_shadow_split_2 = 0.15
+directional_shadow_split_3 = 0.2
+directional_shadow_blend_splits = true
+directional_shadow_max_distance = 40.0
+
+[node name="Door" parent="Model" instance=ExtResource("31")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.578, -0.1, 0)
+
+[node name="Generator" parent="Model" instance=ExtResource("22")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.261, 0, 0.364)
+
+[node name="Desk" parent="Model" instance=ExtResource("23")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.47671, 0, -2.031)
+
+[node name="Shelf2" parent="Model" instance=ExtResource("24")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.0649)
+
+[node name="Shelf1" parent="Model" instance=ExtResource("25")]
+transform = Transform3D(0.0523359, 0, 0.99863, 0, 1, 0, -0.99863, 0, 0.0523359, -1.97465, 0, -1.65436)
+
+[node name="WallDevice" parent="Model" instance=ExtResource("26")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.324487, 1.67579, -2.45178)
+
+[node name="Portal" parent="Model" instance=ExtResource("27")]
+transform = Transform3D(0.590477, 0, 0.807055, 0, 1, 0, -0.807055, 0, 0.590477, 2.80162, -0.1, 2.43202)
+
+[node name="Ceiling" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.9216, 0)
+mesh = SubResource("6")
+skeleton = NodePath("")
+
+[node name="CeilingFan" parent="Model/Ceiling" instance=ExtResource("4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00280385, -0.543245, 0.00586325)
+
+[node name="Lamp" type="MeshInstance3D" parent="Model/Ceiling/CeilingFan"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.166715, 0)
+cast_shadow = 0
+mesh = SubResource("7")
+
+[node name="OmniLight" type="OmniLight3D" parent="Model/Ceiling/CeilingFan/Lamp" groups=["goat_lamps"]]
+light_color = Color(0.85098, 0.905882, 1, 1)
+shadow_enabled = true
+shadow_bias = 0.05
+omni_range = 7.0
+
+[node name="SpotLight" type="SpotLight3D" parent="Model/Ceiling/CeilingFan/Lamp" groups=["goat_lamps"]]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+light_color = Color(0.996078, 0.972549, 0.639216, 1)
+light_bake_mode = 0
+shadow_enabled = true
+shadow_bias = 0.04
+spot_angle = 40.0
+
+[node name="Screw" type="MeshInstance3D" parent="Model/Ceiling/CeilingFan/Lamp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.109066, 0)
+cast_shadow = 0
+mesh = SubResource("8")
+
+[node name="Wire" type="MeshInstance3D" parent="Model/Ceiling/CeilingFan/Lamp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.661579, 0)
+cast_shadow = 0
+mesh = SubResource("9")
+
+[node name="SunShade1" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.647369, -3.43403)
+mesh = SubResource("42")
+skeleton = NodePath("../..")
+
+[node name="SunShade2" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0644157, 5.44704, -3.41914)
+mesh = SubResource("42")
+skeleton = NodePath("../..")
+
+[node name="SunShade3" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.14031, 3.26988, -3.43403)
+mesh = SubResource("43")
+skeleton = NodePath("../..")
+
+[node name="SunShade4" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.96276, 2.80217, -3.43403)
+mesh = SubResource("43")
+skeleton = NodePath("../..")
+
+[node name="DarknessBelow" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 1.60228, -0.430682, 1.74621)
+mesh = SubResource("2")
+skeleton = NodePath("")
+
+[node name="WallsStaticBody" type="StaticBody3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+
+[node name="CollisionShape1" type="CollisionShape3D" parent="Model/WallsStaticBody"]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, -2.8802, 2.19388, 0)
+shape = SubResource("40")
+
+[node name="CollisionShape2" type="CollisionShape3D" parent="Model/WallsStaticBody"]
+transform = Transform3D(1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, 1.23926, 2.19388, -2.89354)
+shape = SubResource("40")
+
+[node name="Box001StaticBody" type="StaticBody3D" parent="Model"]
+transform = Transform3D(0.151682, 0, -0.988429, 0, 1, 0, 0.988429, 0, 0.151682, 0.68754, 0.334885, -2.22027)
+
+[node name="CollisionShape" type="CollisionShape3D" parent="Model/Box001StaticBody"]
+transform = Transform3D(1, 0, -1.49012e-08, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("32")
+
+[node name="Box002StaticBody" type="StaticBody3D" parent="Model"]
+transform = Transform3D(-6.72978e-08, 0.620588, 0.784137, -2.98023e-08, 0.784137, -0.620588, -1, -6.51333e-08, -3.42757e-08, -2.14799, 0.46218, 2.28029)
+
+[node name="CollisionShape" type="CollisionShape3D" parent="Model/Box002StaticBody"]
+shape = SubResource("14")
+
+[node name="WorkshopFull" parent="Model" instance=ExtResource("16_6fjsk")]
+
+[node name="AC_Mesh_18_001" parent="Model/WorkshopFull" index="0"]
+surface_material_override/0 = ExtResource("17_ne3qs")
+surface_material_override/1 = ExtResource("18_t0g3g")
+surface_material_override/2 = ExtResource("19_uc5e7")
+
+[node name="Box001_Mesh_21_001" parent="Model/WorkshopFull" index="1"]
+surface_material_override/0 = ExtResource("29_0dipg")
+
+[node name="Box002_Mesh_4_004" parent="Model/WorkshopFull" index="2"]
+surface_material_override/0 = ExtResource("29_0dipg")
+
+[node name="Cable001_Mesh_26_001" parent="Model/WorkshopFull" index="3"]
+surface_material_override/0 = ExtResource("6")
+
+[node name="Cable002_Mesh_1_008" parent="Model/WorkshopFull" index="4"]
+surface_material_override/0 = ExtResource("6")
+
+[node name="Extinguisher_Mesh_3_004" parent="Model/WorkshopFull" index="5"]
+surface_material_override/0 = ExtResource("21_mg5sj")
+surface_material_override/1 = ExtResource("22_eypaf")
+surface_material_override/2 = ExtResource("23_givgj")
+surface_material_override/3 = ExtResource("23_kjmfi")
+
+[node name="FloorComputer_Mesh_2_005" parent="Model/WorkshopFull" index="6"]
+surface_material_override/0 = ExtResource("25_cl330")
+surface_material_override/1 = ExtResource("26_ifiim")
+
+[node name="Hammer_001_Mesh_10_001" parent="Model/WorkshopFull" index="7"]
+surface_material_override/0 = ExtResource("19_uc5e7")
+surface_material_override/1 = ExtResource("28_ch63u")
+
+[node name="Paper001_Mesh_16_001" parent="Model/WorkshopFull" index="8"]
+surface_material_override/0 = ExtResource("18")
+
+[node name="Paper_Mesh_17_001" parent="Model/WorkshopFull" index="9"]
+surface_material_override/0 = ExtResource("18")
+
+[node name="Pipe001_Mesh_20_001" parent="Model/WorkshopFull" index="10"]
+surface_material_override/0 = ExtResource("23_givgj")
+
+[node name="Pipe002_Mesh_25_001" parent="Model/WorkshopFull" index="11"]
+surface_material_override/0 = ExtResource("29_0dipg")
+
+[node name="Plane001_Mesh_19_001" parent="Model/WorkshopFull" index="12"]
+surface_material_override/0 = ExtResource("18")
+
+[node name="Screwdriver_001_Mesh_11_001" parent="Model/WorkshopFull" index="13"]
+surface_material_override/0 = ExtResource("21_mg5sj")
+surface_material_override/1 = ExtResource("19_uc5e7")
+
+[node name="Screwdriver001_Mesh_12_001" parent="Model/WorkshopFull" index="14"]
+surface_material_override/0 = ExtResource("21_mg5sj")
+surface_material_override/1 = ExtResource("19_uc5e7")
+
+[node name="Screwdriver002_Mesh_13_001" parent="Model/WorkshopFull" index="15"]
+surface_material_override/0 = ExtResource("23_kjmfi")
+surface_material_override/1 = ExtResource("19_uc5e7")
+
+[node name="Screwdriver003_Mesh_14_001" parent="Model/WorkshopFull" index="16"]
+surface_material_override/0 = ExtResource("23_kjmfi")
+surface_material_override/1 = ExtResource("19_uc5e7")
+
+[node name="Screwdriver004_Mesh_15_001" parent="Model/WorkshopFull" index="17"]
+surface_material_override/0 = ExtResource("23_kjmfi")
+surface_material_override/1 = ExtResource("19_uc5e7")
+
+[node name="Sideboard_Mesh_5_004" parent="Model/WorkshopFull" index="18"]
+surface_material_override/0 = ExtResource("30_pd3oh")
+
+[node name="Syphon001_Mesh_24_001" parent="Model/WorkshopFull" index="19"]
+surface_material_override/0 = ExtResource("31_m8h3e")
+surface_material_override/1 = ExtResource("19_uc5e7")
+
+[node name="Vent001_Mesh_23_001" parent="Model/WorkshopFull" index="20"]
+surface_material_override/0 = ExtResource("19_uc5e7")
+surface_material_override/1 = ExtResource("18_t0g3g")
+
+[node name="Vent_Mesh_22_001" parent="Model/WorkshopFull" index="21"]
+surface_material_override/0 = ExtResource("19_uc5e7")
+surface_material_override/1 = ExtResource("18_t0g3g")
+
+[node name="Walls_Mesh_0_012" parent="Model/WorkshopFull" index="22"]
+surface_material_override/0 = ExtResource("1")
+surface_material_override/1 = ExtResource("2")
+
+[node name="Wrench_001_Mesh_9_003" parent="Model/WorkshopFull" index="23"]
+surface_material_override/0 = ExtResource("27_56gn3")
+
+[node name="Wrench001_Mesh_8_003" parent="Model/WorkshopFull" index="24"]
+surface_material_override/0 = ExtResource("27_56gn3")
+
+[node name="Wrench002_Mesh_7_003" parent="Model/WorkshopFull" index="25"]
+surface_material_override/0 = ExtResource("27_56gn3")
+
+[node name="Wrench003_Mesh_6_003" parent="Model/WorkshopFull" index="26"]
+surface_material_override/0 = ExtResource("27_56gn3")
+
+[editable path="DetailedInteractionTools"]
+[editable path="DetailedInteractionNote"]
+[editable path="Model/WorkshopFull"]

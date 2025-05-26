@@ -1,0 +1,78 @@
+[gd_scene load_steps=6 format=3 uid="uid://chnml22xyjjs1"]
+
+[ext_resource type="Script" path="res://demo/scenes/main/MainMenu.gd" id="2"]
+[ext_resource type="Texture2D" uid="uid://bcsrm2jw1h0ap" path="res://demo/images/background.jpg" id="3"]
+[ext_resource type="FontFile" uid="uid://dxkp5rfk21fkw" path="res://addons/goat/fonts/Tuffy.ttf" id="3_dwoik"]
+[ext_resource type="PackedScene" uid="uid://2k6kq0hno0p7" path="res://demo/scenes/other/CustomButton.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://b1ajra8bndup" path="res://demo/scenes/main/Settings.tscn" id="5"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2")
+
+[node name="Background" type="TextureRect" parent="."]
+self_modulate = Color(0.239216, 0.239216, 0.239216, 1)
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource("3")
+expand_mode = 1
+
+[node name="MainMenuScreen" type="CenterContainer" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenuScreen"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Title" type="Label" parent="MainMenuScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_dwoik")
+theme_override_font_sizes/font_size = 64
+text = "2 MINUTE ADVENTURE"
+horizontal_alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="MainMenuScreen/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenuScreen/VBoxContainer/CenterContainer"]
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 20
+
+[node name="Play" parent="MainMenuScreen/VBoxContainer/CenterContainer/VBoxContainer" instance=ExtResource("4")]
+layout_mode = 2
+text = "PLAY"
+
+[node name="Settings" parent="MainMenuScreen/VBoxContainer/CenterContainer/VBoxContainer" instance=ExtResource("4")]
+layout_mode = 2
+text = "SETTINGS"
+
+[node name="Credits" parent="MainMenuScreen/VBoxContainer/CenterContainer/VBoxContainer" instance=ExtResource("4")]
+layout_mode = 2
+text = "CREDITS"
+
+[node name="Exit" parent="MainMenuScreen/VBoxContainer/CenterContainer/VBoxContainer" instance=ExtResource("4")]
+layout_mode = 2
+text = "EXIT"
+
+[node name="Settings" parent="." instance=ExtResource("5")]
+visible = false
+layout_mode = 1
+
+[connection signal="pressed" from="MainMenuScreen/VBoxContainer/CenterContainer/VBoxContainer/Play" to="." method="_on_Play_pressed"]
+[connection signal="pressed" from="MainMenuScreen/VBoxContainer/CenterContainer/VBoxContainer/Settings" to="." method="_on_Settings_pressed"]
+[connection signal="pressed" from="MainMenuScreen/VBoxContainer/CenterContainer/VBoxContainer/Credits" to="." method="_on_Credits_pressed"]
+[connection signal="pressed" from="MainMenuScreen/VBoxContainer/CenterContainer/VBoxContainer/Exit" to="." method="_on_Exit_pressed"]

@@ -1,2 +1,10 @@
 # Normalize EOL for all files that Git considers text files.
 * text=auto eol=lf
+/.readthedocs.yml   export-ignore
+/LICENSE            export-ignore
+/README.md          export-ignore
+/StartDemoGame.*    export-ignore
+/demo/              export-ignore
+/docs/              export-ignore
+/installation/      export-ignore
+/project.godot      export-ignore

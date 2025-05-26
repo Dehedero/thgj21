@@ -1,0 +1,28 @@
+[gd_scene load_steps=8 format=3 uid="uid://dt6y2o6000spv"]
+
+[ext_resource type="Material" path="res://demo/materials/plastic_red.material" id="1"]
+[ext_resource type="Material" path="res://demo/materials/metal_2.material" id="2"]
+[ext_resource type="PackedScene" uid="uid://byo3idi23vcon" path="res://demo/pickable_items/Remote.tscn" id="3"]
+[ext_resource type="Material" path="res://demo/materials/metal_dark_3.material" id="4"]
+[ext_resource type="Material" path="res://demo/materials/metal_3.material" id="5"]
+[ext_resource type="ArrayMesh" uid="uid://dfa6qr35gw2a6" path="res://demo/meshes/WallDevice.obj" id="6_ccrcx"]
+
+[sub_resource type="BoxShape3D" id="3"]
+size = Vector3(0.994, 1.008, 0.466)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Model" type="MeshInstance3D" parent="."]
+mesh = ExtResource("6_ccrcx")
+surface_material_override/0 = ExtResource("5")
+surface_material_override/1 = ExtResource("4")
+surface_material_override/2 = ExtResource("1")
+surface_material_override/3 = ExtResource("2")
+
+[node name="Remote" parent="." instance=ExtResource("3")]
+transform = Transform3D(0.721708, 0, -0.692198, 0, 1, 0, 0.692198, 0, 0.721708, -0.202756, 0.487416, 0.16543)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("3")

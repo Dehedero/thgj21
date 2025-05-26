@@ -1,0 +1,18 @@
+[gd_scene load_steps=6 format=3 uid="uid://cfbl4socwdaqe"]
+
+[ext_resource type="Script" path="res://demo/scenes/other/CeilingFan.gd" id="1"]
+[ext_resource type="Material" path="res://demo/materials/fan_metal_1.material" id="2"]
+[ext_resource type="Material" path="res://demo/materials/fan_metal_2.material" id="3"]
+[ext_resource type="ArrayMesh" uid="uid://5rfcivmbodfv" path="res://demo/meshes/CeilingFanBlades.obj" id="4_xi4uy"]
+[ext_resource type="ArrayMesh" uid="uid://bducs4cbmw4ui" path="res://demo/meshes/CeilingFanBase.obj" id="5_r63aq"]
+
+[node name="CeilingFan" type="Node3D"]
+script = ExtResource("1")
+
+[node name="Blades" type="MeshInstance3D" parent="."]
+mesh = ExtResource("4_xi4uy")
+surface_material_override/0 = ExtResource("2")
+
+[node name="Base" type="MeshInstance3D" parent="."]
+mesh = ExtResource("5_r63aq")
+surface_material_override/0 = ExtResource("3")

@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://060uce6xfw5p"]
+
+[ext_resource type="Material" path="res://demo/materials/plate.material" id="1"]
+[ext_resource type="ArrayMesh" uid="uid://dc0pjc0wkakfu" path="res://demo/meshes/Plate.obj" id="2_1mb8m"]
+
+[node name="PlateModel" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = ExtResource("2_1mb8m")
+surface_material_override/0 = ExtResource("1")
