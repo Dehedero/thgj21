@@ -11,19 +11,9 @@ config_version=5
 [application]
 
 config/name="THGJ21"
-config/features=PackedStringArray("4.4", "Forward Plus")
 run/main_scene="res://demo/scenes/main/MainMenu.tscn"
+config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
-
-[dotnet]
-
-project/assembly_name="THGJ21"
-
-[editor]
-
-version_control/plugin_name="GitPlugin"
-version_control/autoload_on_startup=true
-
 
 [audio]
 
@@ -46,6 +36,15 @@ DialogueManager="*res://addons/goat/addons/dialogue_manager/dialogue_manager.gd"
 
 gdscript/warnings/unused_signal=false
 gdscript/warnings/return_value_discarded=false
+
+[dotnet]
+
+project/assembly_name="THGJ21"
+
+[editor]
+
+version_control/plugin_name="GitPlugin"
+version_control/autoload_on_startup=true
 
 [editor_plugins]
 

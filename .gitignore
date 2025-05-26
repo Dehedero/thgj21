@@ -10,3 +10,9 @@ export_presets.cfg
 
 # Mono-specific ignores
 .mono/
+
+# Ranamzes's specific ignores
+.cursorrules
+.cursorignore
+.history
+
