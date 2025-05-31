@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://bywow06dp4vmt"]
 
-[ext_resource type="Script" path="res://demo/scenes/main/Gameplay.gd" id="1"]
+[ext_resource type="Script" uid="uid://cu7wg6regqdd2" path="res://demo/scenes/main/Gameplay.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://c4lmhavj60tqh" path="res://addons/goat/main_scenes/Player.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://bwkl82vicm0vv" path="res://demo/scenes/other/Workshop.tscn" id="3"]
 
@@ -37,8 +37,8 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_dsauv"]
 _data = {
-"end_game": SubResource("1"),
-"start_game": SubResource("2")
+&"end_game": SubResource("1"),
+&"start_game": SubResource("2")
 }
 
 [node name="Gameplay" type="Node3D"]
@@ -60,5 +60,5 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 3, 0, 
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_dsauv")
+&"": SubResource("AnimationLibrary_dsauv")
 }

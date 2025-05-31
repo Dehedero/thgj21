@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://chnml22xyjjs1"]
 
-[ext_resource type="Script" path="res://demo/scenes/main/MainMenu.gd" id="2"]
+[ext_resource type="Script" uid="uid://cfyx17rdpo1so" path="res://demo/scenes/main/MainMenu.gd" id="2"]
 [ext_resource type="Texture2D" uid="uid://bcsrm2jw1h0ap" path="res://demo/images/background.jpg" id="3"]
 [ext_resource type="FontFile" uid="uid://dxkp5rfk21fkw" path="res://addons/goat/fonts/Tuffy.ttf" id="3_dwoik"]
 [ext_resource type="PackedScene" uid="uid://2k6kq0hno0p7" path="res://demo/scenes/other/CustomButton.tscn" id="4"]

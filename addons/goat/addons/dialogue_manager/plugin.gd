@@ -2,73 +2,123 @@
 extends EditorPlugin
 
 
-const DialogueConstants = preload("./constants.gd")
-const DialogueImportPlugin = preload("./import_plugin.gd")
-const DialogueTranslationParserPlugin = preload("./editor_translation_parser_plugin.gd")
-const DialogueSettings = preload("./settings.gd")
-const DialogueCache = preload("./components/dialogue_cache.gd")
 const MainView = preload("./views/main_view.tscn")
 
 
-var import_plugin: DialogueImportPlugin
-var translation_parser_plugin: DialogueTranslationParserPlugin
+var import_plugin: DMImportPlugin
+var export_plugin: DMExportPlugin
+var inspector_plugin: DMInspectorPlugin
+var translation_parser_plugin: DMTranslationParserPlugin
 var main_view
-var dialogue_cache: DialogueCache
+var dialogue_cache: DMCache
+
+
+func _enable_plugin() -> void:
+	add_autoload_singleton("DialogueManager", get_plugin_path() + "/dialogue_manager.gd")
+
+
+func _disable_plugin() -> void:
+	remove_autoload_singleton("DialogueManager")
 
 
 func _enter_tree() -> void:
-	add_autoload_singleton("DialogueManager", get_plugin_path() + "/dialogue_manager.gd")
-
 	if Engine.is_editor_hint():
 		Engine.set_meta("DialogueManagerPlugin", self)
 
-		DialogueSettings.prepare()
+		DMSettings.prepare()
 
-		import_plugin = DialogueImportPlugin.new()
+		dialogue_cache = DMCache.new()
+		Engine.set_meta("DMCache", dialogue_cache)
+
+		import_plugin = DMImportPlugin.new()
 		add_import_plugin(import_plugin)
 
-		translation_parser_plugin = DialogueTranslationParserPlugin.new()
+		export_plugin = DMExportPlugin.new()
+		add_export_plugin(export_plugin)
+
+		inspector_plugin = DMInspectorPlugin.new()
+		add_inspector_plugin(inspector_plugin)
+
+		translation_parser_plugin = DMTranslationParserPlugin.new()
 		add_translation_parser_plugin(translation_parser_plugin)
 
 		main_view = MainView.instantiate()
-		main_view.editor_plugin = self
-		# GOAT INTEGRATION EDIT: add the plugin to GOAT screen instead of main screen
-		# get_editor_interface().get_editor_main_screen().add_child(main_view)
-		# _make_visible(false)
-		for child in get_editor_interface().get_editor_main_screen().get_children():
-			if child.name == "GOATMainScreen":
-				child.get_node('%Dialogues').add_child(main_view)
-
-		dialogue_cache = DialogueCache.new()
+		EditorInterface.get_editor_main_screen().add_child(main_view)
+		_make_visible(false)
 		main_view.add_child(dialogue_cache)
-		Engine.set_meta("DialogueCache", dialogue_cache)
 
 		_update_localization()
 
-		get_editor_interface().get_file_system_dock().files_moved.connect(_on_files_moved)
-		get_editor_interface().get_file_system_dock().file_removed.connect(_on_file_removed)
+		EditorInterface.get_file_system_dock().files_moved.connect(_on_files_moved)
+		EditorInterface.get_file_system_dock().file_removed.connect(_on_file_removed)
 
 		add_tool_menu_item("Create copy of dialogue example balloon...", _copy_dialogue_balloon)
 
-		# Prevent the project from showing as unsaved even though it was only just opened
-		if Engine.get_physics_frames() == 0:
-			var timer: Timer = Timer.new()
-			var suppress_unsaved_marker: Callable
-			suppress_unsaved_marker = func():
-				if Engine.get_frames_per_second() >= 10:
-					timer.stop()
-					get_editor_interface().save_all_scenes()
-					timer.queue_free()
-			timer.timeout.connect(suppress_unsaved_marker)
-			add_child(timer)
-			timer.start(0.1)
+		# Automatically swap the script on the example balloon depending on if dotnet is being used.
+		if not FileAccess.file_exists("res://tests/test_basic_dialogue.gd"):
+			var plugin_path: String = get_plugin_path()
+			var balloon_file_names: PackedStringArray = ["example_balloon.tscn", "small_example_balloon.tscn"]
+			for balloon_file_name: String in balloon_file_names:
+				var balloon_path: String = plugin_path + "/example_balloon/" + balloon_file_name
+				var balloon_content: String = FileAccess.get_file_as_string(balloon_path)
+				if "example_balloon.gd" in balloon_content and DMSettings.check_for_dotnet_solution():
+					balloon_content = balloon_content \
+						# Replace script path with the C# one
+						.replace("example_balloon.gd", "ExampleBalloon.cs") \
+						# Replace script UID with the C# one
+						.replace(ResourceUID.id_to_text(ResourceLoader.get_resource_uid(plugin_path + "/example_balloon/example_balloon.gd")), ResourceUID.id_to_text(ResourceLoader.get_resource_uid(plugin_path + "/example_balloon/ExampleBalloon.cs")))
+					var balloon_file: FileAccess = FileAccess.open(balloon_path, FileAccess.WRITE)
+					balloon_file.store_string(balloon_content)
+					balloon_file.close()
+				elif "ExampleBalloon.cs" in balloon_content and not DMSettings.check_for_dotnet_solution():
+					balloon_content = balloon_content \
+						# Replace script path with the GDScript one
+						.replace("ExampleBalloon.cs", "example_balloon.gd") \
+						# Replace script UID with the GDScript one
+						.replace(ResourceUID.id_to_text(ResourceLoader.get_resource_uid(plugin_path + "/example_balloon/ExampleBalloon.cs")), ResourceUID.id_to_text(ResourceLoader.get_resource_uid(plugin_path + "/example_balloon/example_balloon.gd")))
+					var balloon_file: FileAccess = FileAccess.open(balloon_path, FileAccess.WRITE)
+					balloon_file.store_string(balloon_content)
+					balloon_file.close()
+
+		# Automatically make any changes to the known custom balloon if there is one.
+		var balloon_path: String = DMSettings.get_setting(DMSettings.BALLOON_PATH, "")
+		if balloon_path != "" and FileAccess.file_exists(balloon_path):
+			var is_small_window: bool = ProjectSettings.get_setting("display/window/size/viewport_width") < 400
+			var example_balloon_file_name: String = "small_example_balloon.tscn" if is_small_window else "example_balloon.tscn"
+			var example_balloon_path: String = get_plugin_path() + "/example_balloon/" + example_balloon_file_name
+
+			var contents: String = FileAccess.get_file_as_string(balloon_path)
+			var has_changed: bool = false
+
+			# Make sure the current balloon has a UID unique from the example balloon's
+			var example_balloon_uid: String = ResourceUID.id_to_text(ResourceLoader.get_resource_uid(example_balloon_path))
+			var balloon_uid: String = ResourceUID.id_to_text(ResourceLoader.get_resource_uid(balloon_path))
+			if example_balloon_uid == balloon_uid:
+				var new_balloon_uid: String = ResourceUID.id_to_text(ResourceUID.create_id())
+				contents = contents.replace(example_balloon_uid, new_balloon_uid)
+				has_changed = true
+
+			# Make sure the example balloon copy has the correct renaming of the responses menu
+			if "reponses" in contents:
+				contents = contents.replace("reponses", "responses")
+				has_changed = true
+
+			# Save any changes
+			if has_changed:
+				var balloon_file: FileAccess = FileAccess.open(balloon_path, FileAccess.WRITE)
+				balloon_file.store_string(contents)
+				balloon_file.close()
 
 
 func _exit_tree() -> void:
-	remove_autoload_singleton("DialogueManager")
-
 	remove_import_plugin(import_plugin)
 	import_plugin = null
+
+	remove_export_plugin(export_plugin)
+	export_plugin = null
+
+	remove_inspector_plugin(inspector_plugin)
+	inspector_plugin = null
 
 	remove_translation_parser_plugin(translation_parser_plugin)
 	translation_parser_plugin = null
@@ -77,17 +127,16 @@ func _exit_tree() -> void:
 		main_view.queue_free()
 
 	Engine.remove_meta("DialogueManagerPlugin")
-	Engine.remove_meta("DialogueCache")
+	Engine.remove_meta("DMCache")
 
-	get_editor_interface().get_file_system_dock().files_moved.disconnect(_on_files_moved)
-	get_editor_interface().get_file_system_dock().file_removed.disconnect(_on_file_removed)
+	EditorInterface.get_file_system_dock().files_moved.disconnect(_on_files_moved)
+	EditorInterface.get_file_system_dock().file_removed.disconnect(_on_file_removed)
 
 	remove_tool_menu_item("Create copy of dialogue example balloon...")
 
 
 func _has_main_screen() -> bool:
-	# GOAT INTEGRATION EDIT: disable main screen, use GOAT main screen instead
-	return false
+	return true
 
 
 func _make_visible(next_visible: bool) -> void:
@@ -104,10 +153,10 @@ func _get_plugin_icon() -> Texture2D:
 
 
 func _handles(object) -> bool:
-	var editor_settings: EditorSettings = get_editor_interface().get_editor_settings()
+	var editor_settings: EditorSettings = EditorInterface.get_editor_settings()
 	var external_editor: String = editor_settings.get_setting("text_editor/external/exec_path")
 	var use_external_editor: bool = editor_settings.get_setting("text_editor/external/use_external_editor") and external_editor != ""
-	if object is DialogueResource and use_external_editor and DialogueSettings.get_user_value("open_in_external_editor", false):
+	if object is DialogueResource and use_external_editor and DMSettings.get_user_value("open_in_external_editor", false):
 		var project_path: String = ProjectSettings.globalize_path("res://")
 		var file_path: String = ProjectSettings.globalize_path(object.resource_path)
 		OS.create_process(external_editor, [project_path, file_path])
@@ -127,27 +176,111 @@ func _apply_changes() -> void:
 		_update_localization()
 
 
+func _save_external_data() -> void:
+	if dialogue_cache != null:
+		dialogue_cache.reimport_files()
+
+
 func _build() -> bool:
 	# If this is the dotnet Godot then we need to check if the solution file exists
-	if ProjectSettings.has_setting("dotnet/project/solution_directory"):
-		var directory: String = ProjectSettings.get("dotnet/project/solution_directory")
-		var file_name: String = ProjectSettings.get("dotnet/project/assembly_name")
-		var has_dotnet_solution: bool = FileAccess.file_exists("res://%s/%s.sln" % [directory, file_name])
-		DialogueSettings.set_user_value("has_dotnet_solution", has_dotnet_solution)
+	DMSettings.check_for_dotnet_solution()
 
 	# Ignore errors in other files if we are just running the test scene
-	if DialogueSettings.get_user_value("is_running_test_scene", true): return true
+	if DMSettings.get_user_value("is_running_test_scene", true): return true
 
 	if dialogue_cache != null:
+		dialogue_cache.reimport_files()
+
 		var files_with_errors = dialogue_cache.get_files_with_errors()
 		if files_with_errors.size() > 0:
 			for dialogue_file in files_with_errors:
 				push_error("You have %d error(s) in %s" % [dialogue_file.errors.size(), dialogue_file.path])
-			get_editor_interface().edit_resource(load(files_with_errors[0].path))
+			EditorInterface.edit_resource(load(files_with_errors[0].path))
 			main_view.show_build_error_dialog()
 			return false
 
 	return true
+
+
+## Get the shortcuts used by the plugin
+func get_editor_shortcuts() -> Dictionary:
+	var shortcuts: Dictionary = {
+		toggle_comment = [
+			_create_event("Ctrl+K"),
+			_create_event("Ctrl+Slash")
+		],
+		delete_line = [
+			_create_event("Ctrl+Shift+K")
+		],
+		move_up = [
+			_create_event("Alt+Up")
+		],
+		move_down = [
+			_create_event("Alt+Down")
+		],
+		save = [
+			_create_event("Ctrl+Alt+S")
+		],
+		close_file = [
+			_create_event("Ctrl+W")
+		],
+		find_in_files = [
+			_create_event("Ctrl+Shift+F")
+		],
+
+		run_test_scene = [
+			_create_event("Ctrl+F5")
+		],
+		text_size_increase = [
+			_create_event("Ctrl+Equal")
+		],
+		text_size_decrease = [
+			_create_event("Ctrl+Minus")
+		],
+		text_size_reset = [
+			_create_event("Ctrl+0")
+		]
+	}
+
+	var paths = EditorInterface.get_editor_paths()
+	var settings
+	if FileAccess.file_exists(paths.get_config_dir() + "/editor_settings-4.3.tres"):
+		settings = load(paths.get_config_dir() + "/editor_settings-4.3.tres")
+	elif FileAccess.file_exists(paths.get_config_dir() + "/editor_settings-4.tres"):
+		settings = load(paths.get_config_dir() + "/editor_settings-4.tres")
+	else:
+		return shortcuts
+
+	for s in settings.get("shortcuts"):
+		for key in shortcuts:
+			if s.name == "script_text_editor/%s" % key or s.name == "script_editor/%s" % key:
+				shortcuts[key] = []
+				for event in s.shortcuts:
+					if event is InputEventKey:
+						shortcuts[key].append(event)
+
+	return shortcuts
+
+
+func _create_event(string: String) -> InputEventKey:
+	var event: InputEventKey = InputEventKey.new()
+	var bits = string.split("+")
+	event.keycode = OS.find_keycode_from_string(bits[bits.size() - 1])
+	event.shift_pressed = bits.has("Shift")
+	event.alt_pressed = bits.has("Alt")
+	if bits.has("Ctrl") or bits.has("Command"):
+		event.command_or_control_autoremap = true
+	return event
+
+
+## Get the editor shortcut that matches an event
+func get_editor_shortcut(event: InputEventKey) -> String:
+	var shortcuts: Dictionary = get_editor_shortcuts()
+	for key in shortcuts:
+		for shortcut in shortcuts.get(key, []):
+			if event.as_text().split(" ")[0] == shortcut.as_text().split(" ")[0]:
+				return key
+	return ""
 
 
 ## Get the current version
@@ -183,7 +316,7 @@ func update_import_paths(from_path: String, to_path: String) -> void:
 		# Update the live buffer
 		if main_view.current_file_path == dependent.path:
 			main_view.code_edit.text = main_view.code_edit.text.replace(from_path, to_path)
-			main_view.pristine_text = main_view.code_edit.text
+			main_view.open_buffers[main_view.current_file_path].pristine_text = main_view.code_edit.text
 
 		# Open the file and update the path
 		var file: FileAccess = FileAccess.open(dependent.path, FileAccess.READ)
@@ -196,6 +329,9 @@ func update_import_paths(from_path: String, to_path: String) -> void:
 
 
 func _update_localization() -> void:
+	if not DMSettings.get_setting(DMSettings.UPDATE_POT_FILES_AUTOMATICALLY, true):
+		return
+
 	var dialogue_files = dialogue_cache.get_files()
 
 	# Add any new files to POT generation
@@ -223,7 +359,7 @@ func _update_localization() -> void:
 
 
 func _copy_dialogue_balloon() -> void:
-	var scale: float = get_editor_interface().get_editor_scale()
+	var scale: float = EditorInterface.get_editor_scale()
 	var directory_dialog: FileDialog = FileDialog.new()
 	var label: Label = Label.new()
 	label.text = "Dialogue balloon files will be copied into chosen directory."
@@ -232,38 +368,53 @@ func _copy_dialogue_balloon() -> void:
 	directory_dialog.min_size = Vector2(600, 500) * scale
 	directory_dialog.dir_selected.connect(func(path):
 		var plugin_path: String = get_plugin_path()
+		var is_dotnet: bool = DMSettings.check_for_dotnet_solution()
 
-		var is_dotnet: bool = DialogueSettings.has_dotnet_solution()
 		var balloon_path: String = path + ("/Balloon.tscn" if is_dotnet else "/balloon.tscn")
 		var balloon_script_path: String = path + ("/DialogueBalloon.cs" if is_dotnet else "/balloon.gd")
 
 		# Copy the balloon scene file and change the script reference
 		var is_small_window: bool = ProjectSettings.get_setting("display/window/size/viewport_width") < 400
 		var example_balloon_file_name: String = "small_example_balloon.tscn" if is_small_window else "example_balloon.tscn"
+		var example_balloon_path: String = plugin_path + "/example_balloon/" + example_balloon_file_name
 		var example_balloon_script_file_name: String = "ExampleBalloon.cs" if is_dotnet else "example_balloon.gd"
-		var file: FileAccess = FileAccess.open(plugin_path + "/example_balloon/" + example_balloon_file_name, FileAccess.READ)
-		var file_contents: String = file.get_as_text().replace(plugin_path + "/example_balloon/example_balloon.gd", balloon_script_path)
+		var example_balloon_script_uid: String = ResourceUID.id_to_text(ResourceLoader.get_resource_uid(plugin_path + "/example_balloon/example_balloon.gd"))
+		var example_balloon_uid: String = ResourceUID.id_to_text(ResourceLoader.get_resource_uid(example_balloon_path))
+
+		# Copy the script file
+		var file: FileAccess = FileAccess.open(plugin_path + "/example_balloon/" + example_balloon_script_file_name, FileAccess.READ)
+		var file_contents: String = file.get_as_text()
+		if is_dotnet:
+			file_contents = file_contents.replace("class ExampleBalloon", "class DialogueBalloon")
+		else:
+			file_contents = file_contents.replace("class_name DialogueManagerExampleBalloon ", "")
+		file = FileAccess.open(balloon_script_path, FileAccess.WRITE)
+		file.store_string(file_contents)
+		file.close()
+		var new_balloon_script_uid_raw: int = ResourceUID.create_id()
+		ResourceUID.add_id(new_balloon_script_uid_raw, balloon_script_path)
+		var new_balloon_script_uid: String = ResourceUID.id_to_text(new_balloon_script_uid_raw)
+
+		# Save the new balloon
+		file_contents = FileAccess.get_file_as_string(example_balloon_path)
+		if "example_balloon.gd" in file_contents:
+			file_contents = file_contents.replace(plugin_path + "/example_balloon/example_balloon.gd", balloon_script_path)
+		else:
+			file_contents = file_contents.replace(plugin_path + "/example_balloon/ExampleBalloon.cs", balloon_script_path)
+		var new_balloon_uid: String = ResourceUID.id_to_text(ResourceUID.create_id())
+		file_contents = file_contents.replace(example_balloon_uid, new_balloon_uid).replace(example_balloon_script_uid, new_balloon_script_uid)
 		file = FileAccess.open(balloon_path, FileAccess.WRITE)
 		file.store_string(file_contents)
 		file.close()
 
-		# Copy the script file
-		file = FileAccess.open(plugin_path + "/example_balloon/" + example_balloon_script_file_name, FileAccess.READ)
-		file_contents = file.get_as_text()
-		if is_dotnet:
-			file_contents = file_contents.replace("class ExampleBalloon", "class DialogueBalloon")
-		file = FileAccess.open(balloon_script_path, FileAccess.WRITE)
-		file.store_string(file_contents)
-		file.close()
+		EditorInterface.get_resource_filesystem().scan()
+		EditorInterface.get_file_system_dock().call_deferred("navigate_to_path", balloon_path)
 
-		get_editor_interface().get_resource_filesystem().scan()
-		get_editor_interface().get_file_system_dock().call_deferred("navigate_to_path", balloon_path)
-
-		DialogueSettings.set_setting("balloon_path", balloon_path)
+		DMSettings.set_setting(DMSettings.BALLOON_PATH, balloon_path)
 
 		directory_dialog.queue_free()
 	)
-	get_editor_interface().get_base_control().add_child(directory_dialog)
+	EditorInterface.get_base_control().add_child(directory_dialog)
 	directory_dialog.popup_centered()
 
 
@@ -272,10 +423,11 @@ func _copy_dialogue_balloon() -> void:
 
 func _on_files_moved(old_file: String, new_file: String) -> void:
 	update_import_paths(old_file, new_file)
-	DialogueSettings.move_recent_file(old_file, new_file)
+	DMSettings.move_recent_file(old_file, new_file)
 
 
 func _on_file_removed(file: String) -> void:
 	update_import_paths(file, "")
 	if is_instance_valid(main_view):
 		main_view.close_file(file)
+	_update_localization()

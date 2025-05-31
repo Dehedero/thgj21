@@ -1,6 +1,6 @@
 extends Node
 
-signal changed (variable_name, from_value, to_value)
+signal changed(variable_name, from_value, to_value)
 
 var _variables := {}
 
@@ -45,3 +45,7 @@ func reset() -> void:
 	# TODO: store initial values and use them for resetting
 	_variables = {}
 	_load()
+
+
+func has_variable(variable_name: String) -> bool:
+	return variable_name in _variables

@@ -114,7 +114,7 @@ func find_in_line(line: String, text: String, from_index: int = 0) -> int:
 		return line.findn(text, from_index)
 
 
-### Signals
+#region Signals
 
 
 func _on_text_edit_gui_input(event: InputEvent) -> void:
@@ -122,9 +122,11 @@ func _on_text_edit_gui_input(event: InputEvent) -> void:
 		match event.as_text():
 			"Ctrl+F", "Command+F":
 				open_requested.emit()
+				get_viewport().set_input_as_handled()
 			"Ctrl+Shift+R", "Command+Shift+R":
 				replace_check_button.set_pressed(true)
 				open_requested.emit()
+				get_viewport().set_input_as_handled()
 
 
 func _on_text_edit_text_changed() -> void:
@@ -175,13 +177,16 @@ func _on_replace_button_pressed() -> void:
 
 	# Replace the selection at result index
 	var r: Array = results[result_index]
+	code_edit.begin_complex_operation()
 	var lines: PackedStringArray = code_edit.text.split("\n")
 	var line: String = lines[r[0]]
 	line = line.substr(0, r[1]) + replace_input.text + line.substr(r[1] + r[2])
 	lines[r[0]] = line
 	code_edit.text = "\n".join(lines)
-	search(input.text, result_index)
+	code_edit.end_complex_operation()
 	code_edit.text_changed.emit()
+
+	search(input.text, result_index)
 
 
 func _on_replace_all_button_pressed() -> void:
@@ -208,3 +213,6 @@ func _on_input_focus_entered() -> void:
 
 func _on_match_case_check_box_toggled(button_pressed: bool) -> void:
 	search()
+
+
+#endregion

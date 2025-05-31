@@ -18,11 +18,11 @@ enum ItemType {
 }
 
 @export var unique_name: String
-@export var item_type : ItemType = ItemType.NORMAL
+@export var item_type: ItemType = ItemType.NORMAL
 # This will only be used by items with type INVENTORY
-@export var inventory_item_name : String
-@export var collision_shape : Shape3D = BoxShape3D.new(): set = set_collision_shape
-@export var sounds : Array[AudioStream] : set = set_sounds
+@export var inventory_item_name: String
+@export var collision_shape: Shape3D = BoxShape3D.new(): set = set_collision_shape
+@export var sounds: Array[AudioStream]: set = set_sounds
 
 @onready var interaction_icon = $InteractionIcon
 @onready var random_audio_player = $RandomAudioPlayer
@@ -33,18 +33,19 @@ const COLLISION_MASK_LAYER = 2
 var _orig_cast_shadow_settings = {}
 
 func _ready():
-	if ("_activated_" + unique_name) in goat_state._variables and item_type == ItemType.INVENTORY:
+	if Engine.is_editor_hint():
+		return
+	if goat_state.has_variable("_activated_" + unique_name) and item_type == ItemType.INVENTORY:
 		queue_free()
 		return
-	
-	if ("_put_down_" + unique_name) in goat_state._variables and item_type == ItemType.HAND:
+	if goat_state.has_variable("_put_down_" + unique_name) and item_type == ItemType.HAND:
 		global_transform = goat_state.get_value("_put_down_" + unique_name)
-	
+
 	# This would make it easier to find the item
 	add_to_group("goat_interactive_object_" + unique_name)
 	collision_shape_node.shape = collision_shape
 	random_audio_player.streams = sounds
-	
+
 	goat_interaction.connect("object_selected", self._on_object_selected)
 	goat_interaction.connect("object_deselected", self._on_object_deselected)
 	goat_interaction.connect("object_activated", self._on_object_activated)
@@ -90,18 +91,18 @@ func _on_object_deselected(object_name):
 func _on_object_activated(object_name, _point):
 	if object_name != unique_name:
 		return
-	
+
 	if item_type == ItemType.DIALOGUE:
 #		# TODO: use a dedicated field for this
 		goat_voice.start_dialogue(inventory_item_name)
 		return
-	
+
 	# Items other than NORMAL can only be used once
 	if item_type != ItemType.NORMAL:
 		_set_enabled(false)
-	
+
 	_play_sound()
-	
+
 	if item_type == ItemType.INVENTORY:
 		# INVENTORY items should not play default audio
 		goat_voice.prevent_default()
@@ -117,7 +118,7 @@ func _on_object_activated(object_name, _point):
 func _on_object_activated_alternatively(object_name, _point):
 	if object_name != unique_name:
 		return
-	
+
 	# Inventory items don't show context inventory, instead they are picked up
 	if item_type == ItemType.INVENTORY:
 		_on_object_activated(object_name, _point)
@@ -128,14 +129,14 @@ func _on_object_activated_alternatively(object_name, _point):
 func _on_object_enabled(object_name):
 	if object_name != unique_name:
 		return
-	
+
 	_set_enabled(true)
 
 
 func _on_object_disabled(object_name):
 	if object_name != unique_name:
 		return
-	
+
 	_set_enabled(false)
 
 
@@ -172,15 +173,15 @@ func _set_enabled(enabled):
 func _pick_up():
 	var hand = get_tree().get_nodes_in_group("goat_player_hand")[0]
 	var orig_transform = global_transform
-	
+
 	get_parent().remove_child(self)
 	hand.add_child(self)
-	
+
 	var tween = create_tween()
 	tween.tween_property(self, "global_transform", orig_transform, 0)
 	tween.tween_property(self, "global_transform", hand.global_transform, 0.2)
 	tween.tween_callback(self._put_in_hand)
-	
+
 	# Force raycast update
 	goat.game_mode = goat.GameMode.EXPLORING
 
@@ -204,7 +205,7 @@ func _put_down(surface: Node3D, global_point: Vector3):
 	var hand = get_tree().get_nodes_in_group("goat_player_hand")[0]
 	assert(self.item_type == self.ItemType.HAND)
 	assert(get_parent() == hand)
-	
+
 	# Create a temp node, to easily read final position and rotation
 	var temp_node = Node3D.new()
 	surface.add_child(temp_node)
@@ -216,11 +217,11 @@ func _put_down(surface: Node3D, global_point: Vector3):
 	# Store the location where this item was placed
 	goat_state._register_variable("_put_down_" + unique_name, temp_node.global_transform)
 	temp_node.queue_free()
-	
+
 	var orig_transform = global_transform
 	hand.remove_child(self)
 	surface.add_child(self)
-	
+
 	var tween = create_tween()
 	# Item has a new parent, but the interpolation should start from the same global point
 	tween.tween_property(self, "global_transform", orig_transform, 0)
@@ -229,12 +230,12 @@ func _put_down(surface: Node3D, global_point: Vector3):
 	tween.tween_property(self, "global_position", dest_position, 0.2)
 	# Activate the item once it is placed on the surface
 	tween.tween_callback(self._set_enabled.bind(true))
-	
+
 	# Scale has to be interpolated simultaneously
 	var tween_scale = create_tween()
 	tween_scale.tween_property(self, "scale", hand.scale, 0)
 	tween_scale.tween_property(self, "scale", dest_scale, 0.2)
-	
+
 	# Force raycast update
 	goat.game_mode = goat.GameMode.EXPLORING
 

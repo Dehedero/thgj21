@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://c4lmhavj60tqh"]
 
-[ext_resource type="Script" path="res://addons/goat/main_scenes/Player.gd" id="1"]
+[ext_resource type="Script" uid="uid://dq8jh488wu5c7" path="res://addons/goat/main_scenes/Player.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://bhat28de4h0ds" path="res://addons/goat/helper_scenes/RayCast3D.tscn" id="3"]
 [ext_resource type="FontFile" uid="uid://dxkp5rfk21fkw" path="res://addons/goat/fonts/Tuffy.ttf" id="3_ooag5"]
 [ext_resource type="PackedScene" uid="uid://06q5uaw87s6g" path="res://addons/goat/helper_scenes/InventoryBar.tscn" id="4"]

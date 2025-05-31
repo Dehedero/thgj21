@@ -8,9 +8,9 @@ combination that doesn't make sense is attempted). This is not intended to play
 environment sounds or background music.
 """
 
-signal started (audio_name)
-signal finished (audio_name)
-signal responses (responses)
+signal started(audio_name)
+signal finished(audio_name)
+signal responses(responses)
 
 # Delays playing the default audio, so it can be replaced by a specific one
 var _default_audio_scheduled := false
@@ -29,18 +29,26 @@ var _dialogue_audio_player := AudioStreamPlayer.new()
 
 
 func start_dialogue(dialogue_name):
+	print("DEBUG: goat_voice.start_dialogue called: ", dialogue_name)
 	prevent_default()
 	var game_resources_directory = goat.get_game_resources_directory()
-	assert (game_resources_directory, "No game resources directory is configured")
+	print("DEBUG: game_resources_directory: ", game_resources_directory)
+	assert(game_resources_directory, "No game resources directory is configured")
 	var path = game_resources_directory + "/goat/dialogues/goat.dialogue"
-	Engine.get_singleton("DialogueManager").show_dialogue_balloon(
-		load(path), dialogue_name
-	)
+	print("DEBUG: dialogue path: ", path)
+	var dialogue_resource = load(path)
+	print("DEBUG: dialogue_resource: ", dialogue_resource)
+	var dialogue_manager = Engine.get_singleton("DialogueManager")
+	print("DEBUG: dialogue_manager: ", dialogue_manager)
+	if dialogue_resource and dialogue_manager:
+		dialogue_manager.show_dialogue_balloon(dialogue_resource, dialogue_name)
+	else:
+		print("ERROR: Dialogue resource or manager not found!")
 
 
 func start(dialogue_resource, title, extra_game_states = []) -> void:
 	"""This is a hook for Dialogue Manager"""
-	_temporary_game_states =  [self] + extra_game_states
+	_temporary_game_states = [self] + extra_game_states
 	_current_dialogue_resource = dialogue_resource
 	_process_dialogue_line(title)
 
@@ -64,10 +72,10 @@ func _process_dialogue_line(line_id):
 	)
 	if not _current_dialogue_line:
 		_current_dialogue_resource = null
-	
+
 	if previous_dialogue_text:
 		finished.emit(previous_dialogue_text)
-	
+
 	if _current_dialogue_line:
 		var line_text = _current_dialogue_line.text
 		var key = _current_dialogue_line.translation_key
@@ -94,7 +102,7 @@ func _ready():
 	_dialogue_audio_player.bus = "GoatMusic"
 	_dialogue_timer.one_shot = true
 	_dialogue_timer.connect("timeout", self._on_dialogue_finished)
-	
+
 	# TODO: allow for configuring this per game
 	goat_voice.connect_default(goat_inventory.item_used)
 	goat_voice.connect_default(goat_interaction.object_activated)
@@ -146,9 +154,9 @@ func _register(audio_file_name: String, time: float = 0) -> void:
 	"""
 	var audio_name = audio_file_name.get_file().get_basename()
 	assert(not _audio_mapping.has(audio_name))
-	
+
 	var sound = null
-	
+
 	if not time:
 		var sound_path := "{}/goat/voice/{}".format(
 			[goat.get_game_resources_directory(), audio_file_name], "{}"
@@ -160,7 +168,7 @@ func _register(audio_file_name: String, time: float = 0) -> void:
 		elif sound is AudioStreamOggVorbis:
 			sound.loop = false
 		time = sound.get_length()
-	
+
 	_audio_mapping[audio_name] = {"time": time, "sound": sound}
 
 
@@ -207,7 +215,7 @@ func is_playing() -> bool:
 	return _current_dialogue_resource != null
 
 
-func _schedule_default(_arg1=null, _arg2=null, _arg3=null, _arg4=null) -> void:
+func _schedule_default(_arg1 = null, _arg2 = null, _arg3 = null, _arg4 = null) -> void:
 	"""
 	Schedules a default audio, but doesn't play it yet, allowing a more specific
 	audio to be played first instead. Arguments are ignored to allow this

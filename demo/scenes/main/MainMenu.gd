@@ -2,6 +2,7 @@ extends Control
 
 
 func _ready():
+	print("DEBUG: MainMenu _ready start")
 	Input.set_custom_mouse_cursor(load("res://demo/images/cursor.png"))
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	# Default voice recordings
@@ -9,6 +10,7 @@ func _ready():
 		["but_why", "what_for", "this_doesnt_make_sense"]
 	)
 	goat.reset_game()
+	print("DEBUG: MainMenu _ready end")
 
 
 func _on_Exit_pressed():

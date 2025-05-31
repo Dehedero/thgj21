@@ -34,7 +34,7 @@ func _ready() -> void:
 
 func _on_download_button_pressed() -> void:
 	# Safeguard the actual dialogue manager repo from accidentally updating itself
-	if FileAccess.file_exists("res://examples/test_scenes/test_scene.gd"):
+	if FileAccess.file_exists("res://tests/test_basic_dialogue.gd"):
 		prints("You can't update the addon from within itself.")
 		failed.emit()
 		return
@@ -54,8 +54,7 @@ func _on_http_request_request_completed(result: int, response_code: int, headers
 	zip_file.store_buffer(body)
 	zip_file.close()
 
-	# GOAT INTEGRATION EDIT: change path to "goat/addons"
-	OS.move_to_trash(ProjectSettings.globalize_path("res://addons/goat/addons/dialogue_manager"))
+	OS.move_to_trash(ProjectSettings.globalize_path("res://addons/dialogue_manager"))
 
 	var zip_reader: ZIPReader = ZIPReader.new()
 	zip_reader.open(TEMP_FILE_NAME)
@@ -70,11 +69,9 @@ func _on_http_request_request_completed(result: int, response_code: int, headers
 	for path in files:
 		var new_file_path: String = path.replace(base_path, "")
 		if path.ends_with("/"):
-			# GOAT INTEGRATION EDIT: change path to "goat/addons"
-			DirAccess.make_dir_recursive_absolute("res://addons/goat/addons/%s" % new_file_path)
+			DirAccess.make_dir_recursive_absolute("res://addons/%s" % new_file_path)
 		else:
-			# GOAT INTEGRATION EDIT: change path to "goat/addons"
-			var file: FileAccess = FileAccess.open("res://addons/goat/addons/%s" % new_file_path, FileAccess.WRITE)
+			var file: FileAccess = FileAccess.open("res://addons/%s" % new_file_path, FileAccess.WRITE)
 			file.store_buffer(zip_reader.read_file(path))
 
 	zip_reader.close()

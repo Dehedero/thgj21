@@ -17,20 +17,21 @@ var movement_direction = Vector3()
 
 
 func _ready():
+	print("DEBUG: Player _ready start")
 	inventory.hide()
 	context_inventory.hide()
 	settings.hide()
 	update_scope_visibility()
-	
+
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	
+
 	goat.connect("game_mode_changed", self._on_game_mode_changed)
 	goat_settings.connect(
 		"value_changed_gui_scope", self._on_scope_settings_changed
 	)
 	goat_voice.connect("started", self._on_voice_changed)
 	goat_voice.connect("finished", self._on_voice_changed)
-	
+
 	RenderingServer.camera_attributes_set_dof_blur_quality(
 		RenderingServer.DOF_BLUR_QUALITY_HIGH, false
 	)
@@ -38,29 +39,30 @@ func _ready():
 		RenderingServer.DOF_BOKEH_CIRCLE
 	)
 	RenderingServer.environment_glow_set_use_bicubic_upscale(true)
-	
+
 	goat.game_mode = goat.GameMode.EXPLORING
+	print("DEBUG: Player _ready end")
 
 
 func _input(event):
 	if goat.game_mode != goat.GameMode.EXPLORING:
 		return
-	
+
 	if event is InputEventMouseMotion and _allow_camera_movement():
 		rotate_camera(event.relative)
-	
+
 	# Prevent further interaction if the voice is playing
 	if goat_voice.is_playing():
 		return
-	
+
 	if Input.is_action_just_pressed("goat_toggle_inventory"):
 		goat.game_mode = goat.GameMode.INVENTORY
-	
+
 	if Input.is_action_just_pressed("goat_dismiss"):
 		goat.game_mode = goat.GameMode.SETTINGS
 
 	update_movement_direction()
-	
+
 	if Input.is_action_just_pressed("goat_crouch"):
 		var new_height = collision_shape_crouched.shape.height - 0.1
 		var tween = _create_tween()
@@ -70,15 +72,16 @@ func _input(event):
 
 
 func _physics_process(_delta):
+	print("DEBUG: Player _physics_process")
 	if goat.game_mode != goat.GameMode.EXPLORING:
 		return
-	
+
 	if movement_direction:
 		velocity = movement_direction * goat.PLAYER_SPEED
 		up_direction = Vector3(0, 1, 0)
 		move_and_slide()
 		_set_y()
-	
+
 	if collision_shape_standing.disabled:
 		if not Input.is_action_pressed("goat_crouch"):
 			var overlapping_bodies = area_standing.get_overlapping_bodies()
@@ -98,7 +101,7 @@ func rotate_camera(relative_movement):
 	# Rotate horizontally
 	camera.rotate_y(deg_to_rad(relative_movement.x * mouse_sensitivity * -1))
 	# Rotate vertically
-	var angle = -relative_movement.y * mouse_sensitivity
+	var angle = - relative_movement.y * mouse_sensitivity
 	var camera_rot = camera.rotation_degrees
 	camera_rot.x += angle
 	camera_rot.x = clamp(
@@ -114,9 +117,9 @@ func rotate_camera(relative_movement):
 func update_movement_direction():
 	# Reset movement direction
 	movement_direction = Vector3()
-	
+
 	var input_movement_vector = Vector2()
-	
+
 	if Input.is_action_pressed("goat_move_player_forward"):
 		input_movement_vector.y += 1
 	if Input.is_action_pressed("goat_move_player_backward"):
@@ -125,9 +128,9 @@ func update_movement_direction():
 		input_movement_vector.x -= 1
 	if Input.is_action_pressed("goat_move_player_right"):
 		input_movement_vector.x = 1
-	
+
 	input_movement_vector = input_movement_vector.normalized()
-	
+
 	var camera_basis = camera.get_global_transform().basis
 	movement_direction += -camera_basis.z.normalized() * input_movement_vector.y
 	movement_direction += camera_basis.x.normalized() * input_movement_vector.x
@@ -144,25 +147,26 @@ func update_scope_visibility():
 
 
 func _on_game_mode_changed(new_game_mode):
+	print("DEBUG: _on_game_mode_changed called: ", new_game_mode)
 	var exploring_mode = new_game_mode == goat.GameMode.EXPLORING
 	var inventory_mode = new_game_mode == goat.GameMode.INVENTORY
-	# HTML export doesn't work with advanced environment settings
 	var is_html = OS.get_name() == "HTML5"
-	
 	update_scope_visibility()
 	ray_cast.enabled = exploring_mode
 	ray_cast.is_holding = _is_holding()
 	camera.attributes.dof_blur_far_enabled = inventory_mode and not is_html
-	
+
 	if exploring_mode:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 
 func _on_scope_settings_changed():
+	print("DEBUG: _on_scope_settings_changed called")
 	update_scope_visibility()
 
 
 func _on_voice_changed(_audio_name):
+	print("DEBUG: _on_voice_changed called")
 	update_scope_visibility()
 
 
