@@ -1,51 +1,39 @@
-Directory structure
+Project Structure
 ===================
 
-There are 2 directories in this repository:
+As GOAT is a plugin, it does not enforce a rigid structure for your entire Godot project. You are free to organize your scenes, scripts, and assets as you see fit.
 
--  ``goat``: contains all scenes and resources of the template; normally
-   there is no need to change anything here, unless you want to
-   implement features that the template doesn't support yet
--  ``demo``: contains actual game resources, such as sounds, voice
-   recordings, 3D models, materials etc.
+However, GOAT needs to know where to find specific game resources that it manages, such as inventory items, voice files, and dialogues.
 
-The structure of the ``demo`` folder looks like this:
+Game Resources Directory
+------------------------
 
-::
+You must specify a **Game Resources Directory** where GOAT will look for these assets. This is configured in the Godot editor:
 
-   demo
-   ├── fonts             # All fonts used in the game
-   ├── globals           # All global scripts, configured as Singletons (AutoLoad)
-   ├── images            # All images, e.g. a custom cursor
-   ├── inventory_items   # REQUIRED; configuration for inventory items
-   │   ├── icons         # Icons representing inventory items (one per item)
-   │   └── models        # 3D models representing inventory items (one per item)
-   ├── materials         # Materials for 3D models
-   ├── models            # 3D models (usually reused in more than one scene)
-   ├── pickable_items    # 3D scenes representing environment objects that can be picked up
-   ├── scenes            # Most of the scenes used in the game
-   │   ├── main          # Scenes responsible for main game screens (main menu, credits, settings, gameplay)
-   │   └── other         # All remaining scenes
-   ├── sounds            # All sounds used in the game, except for voice recordings
-   └── voice             # REQUIRED; all voice recordings
+1.  Go to ``Project -> Project Settings``.
+2.  Navigate to the ``GOAT`` tab on the left (it may be at the bottom).
+3.  Under the ``General`` section, set the ``Game Resources Directory`` property to a directory in your project (e.g., ``res://game``).
 
-When you start working on your project, you should replace the ``demo``
-folder with the resources of your own game. You can modify the structure
-in the listing above, but you need to keep the folders marked as
-``REQUIRED``.
+Required Subdirectories
+-----------------------
 
-To use a custom game resources directory, you need to configure it
-first, probably in one of your game's global files:
+Inside the directory you specified above, GOAT expects a specific subdirectory structure:
 
 ::
 
-   goat.GAME_RESOURCES_DIRECTORY = "demo"
+   <your_game_resources_directory>/
+   └── goat/
+       ├── inventory_items/
+       │   ├── icons/      # PNG icons for inventory items (e.g., my_item.png)
+       │   └── models/     # .tscn scenes for inventory items (e.g., MyItem.tscn)
+       ├── voice/          # Audio files (.ogg, .wav) for voice lines
+       └── dialogues/      # Dialogue Manager files (.dialogue)
 
-As mentioned before, GOAT provides a default settings screen. The "Exit"
-button on that screen exit the program by default. If you want it to
-redirect to e.g. the main menu of your game, you can change it like
-this:
+-  **Inventory Items:** GOAT automatically discovers inventory items by scanning the ``models`` folder for ``.tscn`` files. The scene's filename will be converted to a snake_case ID (e.g., ``MyKey.tscn`` becomes ``my_key``). GOAT will then look for a corresponding icon at ``icons/my_key.png``.
+-  **Voice:** Audio files for voice-overs should be placed here.
+-  **Dialogues:** Files for the Dialogue Manager integration go here.
 
-::
+Example
+-------
 
-   goat.EXIT_SCENE = "res://demo/scenes/main/MainMenu.tscn"
+If you set your ``Game Resources Directory`` to ``res://my_game_data``, GOAT will look for inventory item models in ``res://my_game_data/goat/inventory_items/models/``.

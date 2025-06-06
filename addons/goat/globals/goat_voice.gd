@@ -27,98 +27,8 @@ var _current_dialogue_line = null
 var _dialogue_timer := Timer.new()
 var _dialogue_audio_player := AudioStreamPlayer.new()
 
-
-func start_dialogue(dialogue_name):
-	print("DEBUG: goat_voice.start_dialogue called: ", dialogue_name)
-	prevent_default()
-	var game_resources_directory = goat.get_game_resources_directory()
-	print("DEBUG: game_resources_directory: ", game_resources_directory)
-	assert(game_resources_directory, "No game resources directory is configured")
-	var path = game_resources_directory + "/goat/dialogues/goat.dialogue"
-	print("DEBUG: dialogue path: ", path)
-	var dialogue_resource = load(path)
-	print("DEBUG: dialogue_resource: ", dialogue_resource)
-	var dialogue_manager = Engine.get_singleton("DialogueManager")
-	print("DEBUG: dialogue_manager: ", dialogue_manager)
-	if dialogue_resource and dialogue_manager:
-		dialogue_manager.show_dialogue_balloon(dialogue_resource, dialogue_name)
-	else:
-		print("ERROR: Dialogue resource or manager not found!")
-
-
-func start(dialogue_resource, title, extra_game_states = []) -> void:
-	"""This is a hook for Dialogue Manager"""
-	_temporary_game_states = [self] + extra_game_states
-	_current_dialogue_resource = dialogue_resource
-	_process_dialogue_line(title)
-
-
-func select_response(response):
-	_process_dialogue_line(response.next_id)
-	_waiting_for_response = false
-
-
-func _process_dialogue_line(line_id):
-	var previous_dialogue_text = null
-	if _current_dialogue_line:
-		if _current_dialogue_line.responses and not _waiting_for_response:
-			# Don't finish the dialogue until a response is selected
-			_waiting_for_response = true
-			responses.emit(_current_dialogue_line.responses)
-			return
-		previous_dialogue_text = _current_dialogue_line.text
-	_current_dialogue_line = _current_dialogue_resource.get_next_dialogue_line(
-		line_id, _temporary_game_states
-	)
-	if not _current_dialogue_line:
-		_current_dialogue_resource = null
-
-	if previous_dialogue_text:
-		finished.emit(previous_dialogue_text)
-
-	if _current_dialogue_line:
-		var line_text = _current_dialogue_line.text
-		var key = _current_dialogue_line.translation_key
-		var time = max(1.0, len(line_text) * 0.1)
-		if key in _audio_mapping:
-			if _audio_mapping[key]["sound"]:
-				_dialogue_audio_player.stream = _audio_mapping[key]["sound"]
-				_dialogue_audio_player.play()
-			if _audio_mapping[key]["time"]:
-				time = _audio_mapping[key]["time"]
-		_dialogue_timer.start(time)
-		started.emit(line_text)
-
-
-func _on_dialogue_finished():
-	_process_dialogue_line(_current_dialogue_line.next_id)
-
-
-func _ready():
-	# Randomize to get better results when playing random audio
-	randomize()
-	add_child(_dialogue_timer)
-	add_child(_dialogue_audio_player)
-	_dialogue_audio_player.bus = "GoatMusic"
-	_dialogue_timer.one_shot = true
-	_dialogue_timer.connect("timeout", self._on_dialogue_finished)
-
-	# TODO: allow for configuring this per game
-	goat_voice.connect_default(goat_inventory.item_used)
-	goat_voice.connect_default(goat_interaction.object_activated)
-
-
-func _process(_delta):
-	if _default_audio_scheduled:
-		play_default()
-
-
-func _input(_event):
-	if is_playing() and Input.is_action_just_pressed("goat_dismiss"):
-		stop()
-
-
 func _init():
+	print("DEBUG: goat_voice.gd loaded")
 	if not goat.get_game_resources_directory():
 		print("No voice loaded")
 		return
@@ -140,6 +50,109 @@ func _init():
 			_register(basename, seconds)
 		else:
 			_register(file)
+
+
+func start_dialogue(dialogue_name):
+	print("DEBUG: goat_voice.gd:start_dialogue() begin")
+	prevent_default()
+	var game_resources_directory = goat.get_game_resources_directory()
+	print("DEBUG: game_resources_directory: ", game_resources_directory)
+	assert(game_resources_directory, "No game resources directory is configured")
+	var path = game_resources_directory + "/goat/dialogues/goat.dialogue"
+	print("DEBUG: dialogue path: ", path)
+	var dialogue_resource = load(path)
+	print("DEBUG: dialogue_resource: ", dialogue_resource)
+	var dialogue_manager = Engine.get_singleton("DialogueManager")
+	print("DEBUG: dialogue_manager: ", dialogue_manager)
+	if dialogue_resource and dialogue_manager:
+		var dialogue_line: DialogueLine = await dialogue_manager.get_next_dialogue_line(dialogue_resource, dialogue_name)
+		if dialogue_line == null:
+			print("DEBUG: No dialogue line found, ending dialogue")
+			# Here you can end the dialogue, hide Balloon, etc.
+			return
+		print("DEBUG: dialogue_line: ", dialogue_line)
+		# Now you can safely use dialogue_line.text and other fields
+	else:
+		print("ERROR: dialogue_resource or dialogue_manager not found!")
+	print("DEBUG: goat_voice.gd:start_dialogue() end")
+
+
+func start(dialogue_resource, title, extra_game_states = []) -> void:
+	"""This is a hook for Dialogue Manager"""
+	_temporary_game_states = [self] + extra_game_states
+	_current_dialogue_resource = dialogue_resource
+	_process_dialogue_line(title)
+
+
+func select_response(response):
+	_process_dialogue_line(response.next_id)
+	_waiting_for_response = false
+
+
+func _process_dialogue_line(line_id: String) -> void:
+	print("DEBUG: goat_voice.gd:_process_dialogue_line() begin")
+	var previous_dialogue_text: String = ""
+	if _current_dialogue_line:
+		if _current_dialogue_line.responses and not _waiting_for_response:
+			# Do not finish the dialogue until a response is selected
+			_waiting_for_response = true
+			responses.emit(_filter_valid_responses(_current_dialogue_line.responses))
+			return
+		previous_dialogue_text = _current_dialogue_line.text
+	print("DEBUG: goat_voice.gd:_process_dialogue_line() before await get_next_dialogue_line")
+	var next_line = await _current_dialogue_resource.get_next_dialogue_line(line_id, _temporary_game_states)
+	print("DEBUG: goat_voice.gd:_process_dialogue_line() after await get_next_dialogue_line")
+	_current_dialogue_line = next_line
+	if not _current_dialogue_line:
+		_current_dialogue_resource = null
+
+	if previous_dialogue_text:
+		finished.emit(previous_dialogue_text)
+
+	if _current_dialogue_line:
+		var line_text: String = _current_dialogue_line.text
+		var key: String = _current_dialogue_line.translation_key
+		var time: float = max(1.0, len(line_text) * 0.1)
+		if key in _audio_mapping:
+			if _audio_mapping[key]["sound"]:
+				_dialogue_audio_player.stream = _audio_mapping[key]["sound"]
+				_dialogue_audio_player.play()
+			if _audio_mapping[key]["time"]:
+				time = _audio_mapping[key]["time"]
+		_dialogue_timer.start(time)
+		started.emit(line_text)
+	print("DEBUG: goat_voice.gd:_process_dialogue_line() end")
+
+
+func _on_dialogue_finished():
+	_process_dialogue_line(_current_dialogue_line.next_id)
+
+
+func _ready():
+	print("DEBUG: goat_voice.gd _ready start")
+	# Randomize to get better results when playing random audio
+	randomize()
+	add_child(_dialogue_timer)
+	add_child(_dialogue_audio_player)
+	_dialogue_audio_player.bus = "GoatMusic"
+	_dialogue_timer.one_shot = true
+	_dialogue_timer.connect("timeout", self._on_dialogue_finished)
+
+	# TODO: allow for configuring this per game
+	goat_voice.connect_default(goat_inventory.item_used)
+	goat_voice.connect_default(goat_interaction.object_activated)
+
+	print("DEBUG: goat_voice.gd _ready end")
+
+
+func _process(_delta):
+	if _default_audio_scheduled:
+		play_default()
+
+
+func _input(_event):
+	if is_playing() and Input.is_action_just_pressed("goat_dismiss"):
+		stop()
 
 
 func _register(audio_file_name: String, time: float = 0) -> void:
@@ -222,3 +235,12 @@ func _schedule_default(_arg1 = null, _arg2 = null, _arg3 = null, _arg4 = null) -
 	method to handle different signals.
 	"""
 	_default_audio_scheduled = true
+
+
+# Filter only valid responses (hide failed ones)
+func _filter_valid_responses(responses: Array) -> Array:
+	var valid_responses: Array = []
+	for response in responses:
+		if not response.has("failed") or response["failed"] == false:
+			valid_responses.append(response)
+	return valid_responses

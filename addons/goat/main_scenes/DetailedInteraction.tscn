@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://cu0h1sgvx6e4j"]
 
-[ext_resource type="Script" path="res://addons/goat/main_scenes/DetailedInteraction.gd" id="1"]
+[ext_resource type="Script" uid="uid://dxvyd0ofnij53" path="res://addons/goat/main_scenes/DetailedInteraction.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://bnmg0a564wwjp" path="res://addons/goat/main_scenes/InteractiveItem.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://bhat28de4h0ds" path="res://addons/goat/helper_scenes/RayCast3D.tscn" id="3"]
 

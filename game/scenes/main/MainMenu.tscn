@@ -1,0 +1,67 @@
+[gd_scene load_steps=5 format=3 uid="uid://chnml22xyjjs1"]
+
+[ext_resource type="Script" uid="uid://cfyx17rdpo1so" path="res://game/scenes/main/MainMenu.gd" id="1_xcyia"]
+[ext_resource type="FontFile" uid="uid://dxkp5rfk21fkw" path="res://addons/goat/fonts/Tuffy.ttf" id="2_oayk0"]
+[ext_resource type="PackedScene" uid="uid://b5w5gqw7q8qxg" path="res://game/scenes/main/MenuButton.tscn" id="3_7g6y3"]
+[ext_resource type="PackedScene" uid="uid://dffabq48ebajf" path="res://addons/goat/helper_scenes/Settings.tscn" id="4_v7oac"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xcyia")
+
+[node name="MainMenuScreen" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenuScreen"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Title" type="Label" parent="MainMenuScreen/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_oayk0")
+theme_override_font_sizes/font_size = 64
+text = "GAME_TITLE"
+horizontal_alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="MainMenuScreen/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenuScreen/VBoxContainer/CenterContainer"]
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 20
+
+[node name="Play" parent="MainMenuScreen/VBoxContainer/CenterContainer/VBoxContainer" instance=ExtResource("3_7g6y3")]
+layout_mode = 2
+text = "PLAY"
+
+[node name="Settings" parent="MainMenuScreen/VBoxContainer/CenterContainer/VBoxContainer" instance=ExtResource("3_7g6y3")]
+layout_mode = 2
+text = "SETTINGS"
+
+[node name="Exit" parent="MainMenuScreen/VBoxContainer/CenterContainer/VBoxContainer" instance=ExtResource("3_7g6y3")]
+layout_mode = 2
+text = "EXIT"
+
+[node name="Settings" parent="." instance=ExtResource("4_v7oac")]
+visible = false
+layout_mode = 1
+
+[connection signal="pressed" from="MainMenuScreen/VBoxContainer/CenterContainer/VBoxContainer/Play" to="." method="_on_Play_pressed"]
+[connection signal="pressed" from="MainMenuScreen/VBoxContainer/CenterContainer/VBoxContainer/Settings" to="." method="_on_Settings_pressed"]
+[connection signal="pressed" from="MainMenuScreen/VBoxContainer/CenterContainer/VBoxContainer/Exit" to="." method="_on_Exit_pressed"]

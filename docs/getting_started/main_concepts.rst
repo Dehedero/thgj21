@@ -1,66 +1,55 @@
 Main concepts
 =============
 
-GOAT is intended to help you make your own adventure games, but there
-are some assumptions that you need to keep in mind while working with
-it. This section provides a general overview of the template. More
-details can be found in other sections of this document.
+GOAT is a plugin for Godot Engine that provides a foundation for creating
+3D, first-person, single-player adventure games. This section provides a
+general overview of the template's core concepts.
 
-GOAT supports only 3D, first person perspective, single player games.
-The player can explore a 3D environment and interact with objects in it.
-A special type of interaction allows the player to pick up an object and
-add it to the inventory. The inventory contains 3D items that can be
-rotated and interacted with. There is a general distinction between the
-environment (where the player can move) and the inventory (where picked
-up items are stored). However, both support practically the same types
-of interaction, e.g. you can press a button on a wall (environment) or
-on a remote control (inventory).
+GOAT's primary features are delivered through:
 
-|Interactive button of a remote control in inventory|
+-  **Global Scripts (Singletons):** A set of autoloaded scripts like ``goat``,
+   ``goat_inventory``, and ``goat_state`` that manage the game's core logic.
+   You can access them from anywhere in your code.
+-  **Ready-to-use Scenes:** Pre-made scenes for common adventure game elements.
+   The three main scenes you will use are located in ``addons/goat/main_scenes/``:
+   -  ``Player.tscn``
+   -  ``InteractiveItem.tscn``
+   -  ``InteractiveScreen.tscn``
 
-The template uses several global variables (AutoLoad). One of them is
-the mode of the game. Currently, 5 modes are implemented:
+Game Modes
+----------
 
--  ``NONE`` the game hasn't started yet (default)
--  ``EXPLORING`` the player is moving and interacting with the 3D
-   environment
--  ``INVENTORY`` the player is browsing 3D items in the inventory
--  ``CONTEXT_INVENTORY`` the player is trying to use an inventory item
-   on the environment (e.g. open a door with a key)
--  ``SETTINGS`` the settings screen is shown during the game
+The template uses a system of game modes, managed by the ``goat`` global script.
+The current mode is stored in the ``goat.game_mode`` variable. There are 6 modes
+available:
 
-**Note: the game doesn't pause in any of these modes.**
+-  ``NONE``: The game hasn't started yet (default).
+-  ``EXPLORING``: The player is moving and interacting with the 3D environment.
+-  ``DETAILED_INTERACTION``: The player is closely examining an object.
+-  ``INVENTORY``: The player is browsing 3D items in the inventory.
+-  ``CONTEXT_INVENTORY``: The player is trying to use an inventory item
+   on an environment object (e.g., using a key on a door).
+-  ``SETTINGS``: The settings screen is shown.
 
-GOAT is a Godot project. The assumption is that if you want to create
-your own game, you will clone this repository and replace the demo game
-files with your own. In order to create an interactive environment, you
-can use 3 main scenes provided by GOAT (all described in detail in other
-sections):
+**Note: The game does not pause in any of these modes.**
 
--  ``Player``
--  ``InteractiveItem``
--  ``InteractiveScreen``
+Core Principles
+---------------
 
-You also need to provide the configuration for:
+-  **Interaction:** The player explores a 3D environment and interacts with
+   objects. Special interactions can add items to an inventory.
+-  **Inventory:** The inventory holds 3D items that can be rotated and
+   interacted with, both with each other and with objects in the environment.
+-  **Signals:** GOAT uses signals extensively to allow different parts of your
+   game to communicate without being tightly coupled. For example, the
+   ``goat_interaction`` singleton emits signals when an object is activated.
+-  **Configuration:** To add new inventory items or voice recordings, you will
+   need to provide configuration files and assets in your own game directory,
+   not inside the ``addons/goat`` folder.
 
--  inventory items
--  voice recordings
-
-Most GOAT resources (voice recordings, interactive objects, inventory
-items) are identified by unique names. In most cases, getter methods
-return those names, not the actual resources (e.g. audio files or 3D
-scenes).
-
-GOAT provides many signals, that let you react to different situations
-in the game. For example, you can decide to play a voice recording after
-a button on a wall is pressed or remove an inventory item after the
-player uses it.
-
-GOAT provides also default styles and layouts for the inventory, context
-inventory, subtitles, and settings. Usually, there is no reason to
-change anything in the template files, unless you want to modify the
-style or add new features (which you are encouraged to do, this is open
-source after all!).
+GOAT provides default UI styles and layouts for the inventory, subtitles, and
+settings. You can either use them as-is or create your own UI that interacts
+with the GOAT global scripts.
 
 .. _Godot Engine: https://github.com/godotengine/godot
 .. _3.2 stable: https://downloads.tuxfamily.org/godotengine/3.2/

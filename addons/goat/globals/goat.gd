@@ -1,6 +1,6 @@
 extends Node
 
-signal game_mode_changed (new_game_mode)
+signal game_mode_changed(new_game_mode)
 
 enum GameMode {
 	NONE,
@@ -11,8 +11,13 @@ enum GameMode {
 	SETTINGS,
 }
 
-@export var game_mode : GameMode = GameMode.NONE: set = set_game_mode
+@export var game_mode: GameMode = GameMode.NONE: set = set_game_mode
 
+func _init():
+	print("DEBUG: goat.gd loaded")
+
+func _ready():
+	print("DEBUG: goat.gd _ready start")
 
 func set_game_mode(new_game_mode):
 	# Usually game mode change is a result of user input (e.g. pressing Tab),
@@ -20,6 +25,7 @@ func set_game_mode(new_game_mode):
 	get_viewport().set_input_as_handled()
 	game_mode = new_game_mode
 	emit_signal("game_mode_changed", game_mode)
+	print("DEBUG: goat.gd set_game_mode end")
 
 
 func _input(_event):

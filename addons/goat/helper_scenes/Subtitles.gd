@@ -5,9 +5,12 @@ extends Control
 @onready var responses_container = $MarginContainer/Responses
 
 
-func show_responses(responses):
+func show_responses(responses: Array) -> void:
+	# Show only valid responses (hide failed ones)
 	for response in responses:
-		var response_button = example_response.duplicate()
+		if response.has("failed") and response["failed"]:
+			continue
+		var response_button: Button = example_response.duplicate()
 		response_button.text = response.text
 		response_button.button_down.connect(self.select_response.bind(response))
 		responses_container.add_child(response_button)

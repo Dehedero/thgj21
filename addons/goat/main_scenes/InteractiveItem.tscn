@@ -1,9 +1,9 @@
 [gd_scene load_steps=6 format=3 uid="uid://bnmg0a564wwjp"]
 
-[ext_resource type="Script" path="res://addons/goat/main_scenes/InteractiveItem.gd" id="1"]
+[ext_resource type="Script" uid="uid://ca6e055376t8o" path="res://addons/goat/main_scenes/InteractiveItem.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://2t38vrxwiv4l" path="res://addons/goat/images/item_interaction_icon.png" id="2"]
 [ext_resource type="Material" uid="uid://d20al6okuifpt" path="res://addons/goat/materials/item_interaction_icon.tres" id="3"]
-[ext_resource type="Script" path="res://addons/goat/addons/randomAudioStreamPlayer/random_audio_stream_player_3D.gd" id="4"]
+[ext_resource type="Script" uid="uid://b7e03pwuepdnt" path="res://addons/goat/addons/randomAudioStreamPlayer/random_audio_stream_player_3D.gd" id="4"]
 
 [sub_resource type="BoxShape3D" id="1"]
 size = Vector3(0.2, 0.2, 0.2)

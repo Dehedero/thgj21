@@ -92,8 +92,11 @@ func apply_dialogue_line() -> void:
 	mutation_cooldown.stop()
 
 	is_waiting_for_input = false
-	balloon.focus_mode = Control.FOCUS_ALL
-	balloon.grab_focus()
+	if balloon:
+		balloon.focus_mode = Control.FOCUS_ALL
+		balloon.grab_focus()
+	else:
+		print("ERROR: Balloon node not found! (FOCUS_ALL)")
 
 	character_label.visible = not dialogue_line.character.is_empty()
 	character_label.text = tr(dialogue_line.character, "dialogue")
@@ -105,7 +108,10 @@ func apply_dialogue_line() -> void:
 	responses_menu.responses = dialogue_line.responses
 
 	# Show our balloon
-	balloon.show()
+	if balloon:
+		balloon.show()
+	else:
+		print("ERROR: Balloon node not found! (show)")
 	will_hide_balloon = false
 
 	dialogue_label.show()
@@ -115,7 +121,10 @@ func apply_dialogue_line() -> void:
 
 	# Wait for input
 	if dialogue_line.responses.size() > 0:
-		balloon.focus_mode = Control.FOCUS_NONE
+		if balloon:
+			balloon.focus_mode = Control.FOCUS_NONE
+		else:
+			print("ERROR: Balloon node not found! (FOCUS_NONE)")
 		responses_menu.show()
 	elif dialogue_line.time != "":
 		var time = dialogue_line.text.length() * 0.02 if dialogue_line.time == "auto" else dialogue_line.time.to_float()
@@ -123,8 +132,11 @@ func apply_dialogue_line() -> void:
 		next(dialogue_line.next_id)
 	else:
 		is_waiting_for_input = true
-		balloon.focus_mode = Control.FOCUS_ALL
-		balloon.grab_focus()
+		if balloon:
+			balloon.focus_mode = Control.FOCUS_ALL
+			balloon.grab_focus()
+		else:
+			print("ERROR: Balloon node not found! (FOCUS_ALL 2)")
 
 
 ## Go to the next line

@@ -72,7 +72,6 @@ func _input(event):
 
 
 func _physics_process(_delta):
-	print("DEBUG: Player _physics_process")
 	if goat.game_mode != goat.GameMode.EXPLORING:
 		return
 
