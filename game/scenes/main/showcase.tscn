@@ -1,8 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://c71lihh2x14rw"]
+[gd_scene load_steps=10 format=3 uid="uid://c71lihh2x14rw"]
 
-[ext_resource type="Script" path="res://demo/scenes/main/showcase.gd" id="1_d35xd"]
+[ext_resource type="Script" path="res://game/scenes/main/showcase.gd" id="1_d35xd"]
 [ext_resource type="PackedScene" uid="uid://c4lmhavj60tqh" path="res://addons/goat/main_scenes/Player.tscn" id="1_vuqcq"]
-[ext_resource type="PackedScene" uid="uid://4p0oak4fouaq" path="res://demo/scenes/other/door_with_handle.tscn" id="2_mngc5"]
+[ext_resource type="PackedScene" path="res://demo/scenes/inventory_item.tscn" id="key_demo"]
+[ext_resource type="PackedScene" path="res://demo/scenes/npc.tscn" id="npc_demo"]
+[ext_resource type="PackedScene" path="res://demo/scenes/terminal.tscn" id="terminal_demo"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_g5jfv"]
 
@@ -31,10 +33,11 @@ mesh = SubResource("PlaneMesh_kqon3")
 
 [node name="Player" parent="." instance=ExtResource("1_vuqcq")]
 
-[node name="DoorWithHandle" parent="." instance=ExtResource("2_mngc5")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 1)
+[node name="NPC" parent="." instance=ExtResource("npc_demo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 0)
 
-[node name="InteractiveItem" parent="DoorWithHandle/Handle" index="0"]
-unique_name = "open_2_minute_adventure"
+[node name="Terminal" parent="." instance=ExtResource("terminal_demo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 0)
 
-[editable path="DoorWithHandle"]
+[node name="KeyDemo" parent="." instance=ExtResource("key_demo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)

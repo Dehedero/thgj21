@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://chnml22xyjjs1"]
 
-[ext_resource type="Script" uid="uid://cfyx17rdpo1so" path="res://game/scenes/main/MainMenu.gd" id="1_xcyia"]
+[ext_resource type="Script" path="res://game/scenes/main/MainMenu.gd" id="1_xcyia"]
 [ext_resource type="FontFile" uid="uid://dxkp5rfk21fkw" path="res://addons/goat/fonts/Tuffy.ttf" id="2_oayk0"]
 [ext_resource type="PackedScene" uid="uid://b5w5gqw7q8qxg" path="res://game/scenes/main/MenuButton.tscn" id="3_7g6y3"]
 [ext_resource type="PackedScene" uid="uid://dffabq48ebajf" path="res://addons/goat/helper_scenes/Settings.tscn" id="4_v7oac"]

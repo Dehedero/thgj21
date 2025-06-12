@@ -1,0 +1,18 @@
+title: start
+npc: Привет! Я демонстрирую диалоги GOAT.
+responses:
+  - text: "Покажи пример."
+    goto: example
+  - text: "Пока!"
+    goto: end
+
+---
+title: example
+npc: Вот пример диалога с выбором!
+responses:
+  - text: "Спасибо!"
+    goto: end
+
+---
+title: end
+npc: Удачи в разработке!

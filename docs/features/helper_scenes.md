@@ -1,0 +1,322 @@
+# 3.8. Вспомогательные UI-сцены (helper_scenes)
+
+Этот раздел описывает готовые UI-компоненты, входящие в шаблон GOAT, и их интеграцию с глобальными системами. Все helper-сцены предназначены для быстрой интеграции, расширения и кастомизации пользовательского интерфейса.
+
+## Inventory.tscn
+**Назначение:** Полноэкранный 3D-инвентарь с возможностью вращения предметов, drag&drop, выбором и использованием предметов.
+
+### Архитектура и интеграция
+- Inventory.tscn — это сцена типа Control, включающая SubViewport для 3D-просмотра предмета, список предметов (InventoryItems), кнопки управления и обработку событий мыши.
+- Интегрируется с goat_inventory (получение и изменение списка предметов), goat_voice (блокировка управления во время озвучки), goat_settings (чувствительность мыши, параметры интерфейса).
+- Использует сигналы goat_inventory: item_selected, items_changed, item_used и собственный сигнал rotation_reset_requested.
+
+### Основные сигналы
+- `item_selected(item_name: String)` — выбран новый предмет.
+- `items_changed(new_items: Array)` — изменился список предметов.
+- `rotation_reset_requested()` — пользователь запросил сброс вращения 3D-модели.
+
+### Пример расширения: добавление новой кнопки
+```gdscript
+# Ваша сцена наследует Inventory.tscn
+extends "res://addons/goat/helper_scenes/Inventory.gd"
+
+@onready var my_button = $MyButton
+
+func _ready():
+    super._ready()
+    my_button.pressed.connect(_on_my_button_pressed)
+
+func _on_my_button_pressed():
+    # Example: print selected item name
+    var selected_item = goat_inventory.get_selected_item()
+    print("Selected item:", selected_item)
+```
+
+### Пример: обработка события использования предмета
+```gdscript
+func _ready():
+    super._ready()
+    goat_inventory.item_used.connect(_on_item_used)
+
+func _on_item_used(item_name, used_on_name):
+    print("Item used:", item_name, "on", used_on_name)
+```
+
+### Best practices
+- Подписывайтесь на сигналы только в нужных режимах (например, только когда открыт инвентарь).
+- Не изменяйте оригинальный скрипт Inventory.gd — используйте наследование или композицию.
+- Для кастомизации интерфейса добавляйте свои кнопки и элементы через дочерние узлы.
+- Для сложных предметов реализуйте отдельные 3D-модели и логику использования через обработку сигнала item_used.
+- Максимальная вместимость инвентаря задаётся константой CAPACITY (по умолчанию 8).
+
+### Архитектурные ограничения
+- Inventory.tscn предполагает работу только с goat_inventory и не поддерживает несколько независимых инвентарей.
+- Все предметы должны иметь уникальные имена и соответствующие 3D-модели/иконки.
+- Для корректной работы drag&drop используйте стандартные методы Godot и не меняйте структуру InventoryItems.tscn без необходимости.
+
+## InventoryBar.tscn
+**Назначение:** Компактная панель быстрого доступа к предметам, отображается в режиме исследования.
+
+### Архитектура и интеграция
+- InventoryBar.tscn — это сцена типа Control, содержащая VBoxContainer с кнопками для каждого предмета и AnimationPlayer для анимации появления/скрытия панели.
+- Интегрируется с goat_inventory (отображение предметов, обновление иконок, обработка событий добавления/замены предметов).
+- Использует сигналы goat_inventory: item_added, item_replaced, items_changed.
+
+### Основные сигналы
+- `item_added(item_name: String)` — предмет добавлен в инвентарь.
+- `item_replaced(replaced_item_name: String, replacing_item_name: String)` — предмет заменён.
+- `items_changed(new_items: Array)` — изменился список предметов.
+
+### Пример расширения: добавление нового слота
+```gdscript
+# Ваша сцена наследует InventoryBar.tscn
+extends "res://addons/goat/helper_scenes/InventoryBar.gd"
+
+func _ready():
+    super._ready()
+    # Add a new button for an extra slot
+    var new_button = Button.new()
+    new_button.icon = preload("res://game/goat/inventory_items/icons/special_item.png")
+    $Items.add_child(new_button)
+    new_button.pressed.connect(_on_special_item_pressed)
+
+func _on_special_item_pressed():
+    print("Special item button pressed!")
+```
+
+### Пример: изменение анимации панели
+```gdscript
+# Изменить длительность анимации через AnimationPlayer
+@onready var animation_player = $AnimationPlayer
+
+func _ready():
+    super._ready()
+    animation_player.get_animation("show").length = 2.0 # Set animation duration to 2 seconds
+```
+
+### Best practices
+- Не изменяйте оригинальный скрипт InventoryBar.gd — используйте наследование для добавления логики.
+- Для кастомизации внешнего вида используйте theme_override_styles и собственные иконки.
+- Для расширения панели добавляйте новые кнопки через дочерние узлы.
+- Подписывайтесь на сигналы только при необходимости, чтобы избежать лишних обновлений UI.
+
+### Архитектурные ограничения
+- InventoryBar.tscn рассчитан на работу с goat_inventory и не поддерживает динамическое изменение количества слотов без модификации структуры.
+- Для корректной работы анимаций не изменяйте структуру VBoxContainer и AnimationPlayer без необходимости.
+
+## ContextInventory.tscn
+**Назначение:** Контекстное меню инвентаря для быстрого использования предметов на объектах окружения.
+
+### Архитектура и интеграция
+- ContextInventory.tscn — это сцена типа Control, реализующая всплывающее меню с кнопками для каждого предмета инвентаря и кнопкой выхода.
+- Интегрируется с goat_inventory (получение и обновление списка предметов, использование предметов), goat_interaction (получение выбранного объекта окружения).
+- Использует сигналы goat_inventory: items_changed, а также goat: game_mode_changed.
+
+### Основные сигналы
+- `items_changed(new_items: Array)` — изменился список предметов.
+- `game_mode_changed(new_game_mode: int)` — изменился режим игры (от goat).
+
+### Пример расширения: добавление нового типа взаимодействия
+```gdscript
+# Ваша сцена наследует ContextInventory.tscn
+extends "res://addons/goat/helper_scenes/ContextInventory.gd"
+
+func _on_item_button_pressed(item_index):
+    var item_name = goat_inventory.get_items()[item_index]
+    var environment_object = goat_interaction.get_selected_object("environment")
+    # Custom logic: use item only if environment_object is a special type
+    if environment_object == "special_terminal":
+        print("Using", item_name, "on special terminal!")
+        # Custom action here
+    else:
+        super._on_item_button_pressed(item_index)
+```
+
+### Пример: обработка выхода из меню
+```gdscript
+func _on_ExitButton_pressed():
+    print("Context inventory closed")
+    _go_back_to_exploring()
+```
+
+### Best practices
+- Для расширения логики использования предметов переопределяйте _on_item_button_pressed.
+- Не изменяйте оригинальный скрипт ContextInventory.gd — используйте наследование.
+- Для кастомизации интерфейса добавляйте свои кнопки и элементы через дочерние узлы.
+- Подписывайтесь на сигналы только при необходимости, чтобы избежать лишних обновлений UI.
+
+### Архитектурные ограничения
+- ContextInventory.tscn рассчитан на работу только с goat_inventory и goat_interaction.
+- Для корректной работы не изменяйте структуру CenterContainer и кнопок без необходимости.
+- Поддерживает только один выбранный объект окружения за раз.
+
+## Settings.tscn
+**Назначение:** Меню настроек, автоматически подгружает кастомную или дефолтную реализацию.
+
+### Архитектура и интеграция
+- Settings.tscn — это сцена типа Control, которая при инициализации подгружает стандартную или пользовательскую сцену настроек.
+- Интегрируется с goat_settings (чтение и запись параметров), goat (управление режимами), поддерживает кастомные параметры через DEFAULT_VALUES.
+- Использует сигналы goat: game_mode_changed, goat_settings: value_changed и value_changed_<section>_<key>.
+
+### Основные сигналы
+- `game_mode_changed(new_game_mode: int)` — изменился режим игры (от goat).
+- `value_changed(section: String, key: String, value: Variant)` — изменилось значение параметра (от goat_settings).
+
+### Пример расширения: добавление нового параметра
+```gdscript
+# В goat_settings.gd
+DEFAULT_VALUES.append(["gameplay", "show_tutorials", true])
+
+# В пользовательской сцене настроек
+func _ready():
+    goat_settings.connect("value_changed_gameplay_show_tutorials", _on_show_tutorials_changed)
+
+func _on_show_tutorials_changed(_section, _key, value):
+    if value:
+        print("Tutorials enabled!")
+```
+
+### Пример: кастомизация UI
+```gdscript
+# Ваша сцена наследует Settings.tscn
+extends "res://addons/goat/helper_scenes/Settings.gd"
+
+func _ready():
+    super._ready()
+    # Add a custom button to the settings menu
+    var custom_button = Button.new()
+    custom_button.text = "Reset Progress"
+    custom_button.pressed.connect(_on_reset_progress_pressed)
+    add_child(custom_button)
+
+func _on_reset_progress_pressed():
+    goat_state.reset()
+    print("Game progress reset!")
+```
+
+### Best practices
+- Для добавления новых параметров используйте DEFAULT_VALUES в goat_settings.gd.
+- Для кастомизации интерфейса добавляйте свои элементы через наследование или дочерние узлы.
+- Подписывайтесь на сигналы value_changed только для нужных параметров.
+- Не изменяйте оригинальный скрипт Settings.gd — используйте наследование.
+
+### Архитектурные ограничения
+- Settings.tscn рассчитан на работу только с goat_settings и goat.
+- Для корректной работы не изменяйте структуру Control без необходимости.
+- Все параметры должны быть зарегистрированы в DEFAULT_VALUES для корректного сохранения и загрузки.
+
+## Subtitles.tscn
+**Назначение:** Вывод субтитров и вариантов ответов в диалогах, интеграция с goat_voice и goat_settings.
+
+### Архитектура и интеграция
+- Subtitles.tscn — это сцена типа Control, содержащая Label для субтитров и VBoxContainer для вариантов ответов.
+- Интегрируется с goat_voice (отображение субтитров и вариантов ответа при диалогах), goat_settings (включение/отключение субтитров), поддерживает динамическое обновление UI.
+- Использует сигналы goat_voice: responses, started, finished, а также goat_settings: value_changed_gui_subtitles.
+
+### Основные сигналы
+- `responses(responses: Array)` — отображение вариантов ответа.
+- `started(audio_name: String)` — начало озвучки (от goat_voice).
+- `finished(audio_name: String)` — завершение озвучки (от goat_voice).
+- `value_changed_gui_subtitles(_section, _key, value: bool)` — изменение настройки субтитров (от goat_settings).
+
+### Пример расширения: изменение стиля субтитров
+```gdscript
+# Ваша сцена наследует Subtitles.tscn
+extends "res://addons/goat/helper_scenes/Subtitles.gd"
+
+@onready var bottom_text = $MarginContainer/BottomText
+
+func _ready():
+    super._ready()
+    # Change font and color
+    var custom_font = preload("res://game/fonts/MyFont.tres")
+    bottom_text.add_theme_font_override("font", custom_font)
+    bottom_text.add_theme_color_override("font_color", Color(1, 0.8, 0.2))
+```
+
+### Пример: добавление кастомной логики для вариантов ответа
+```gdscript
+func show_responses(responses: Array) -> void:
+    for response in responses:
+        var response_button: Button = example_response.duplicate()
+        response_button.text = response.text
+        response_button.pressed.connect(func():
+            print("Selected response:", response.text)
+            goat_voice.select_response(response)
+        )
+        responses_container.add_child(response_button)
+        response_button.show()
+    bottom_text.hide()
+```
+
+### Best practices
+- Для изменения внешнего вида используйте theme_override_fonts, theme_override_colors и кастомные стили.
+- Для расширения логики обработки ответов переопределяйте show_responses.
+- Не изменяйте оригинальный скрипт Subtitles.gd — используйте наследование.
+- Подписывайтесь на сигналы только для нужных событий.
+
+### Архитектурные ограничения
+- Subtitles.tscn рассчитан на работу только с goat_voice и goat_settings.
+- Для корректной работы не изменяйте структуру MarginContainer и Responses без необходимости.
+- Поддерживает только один активный набор вариантов ответа за раз.
+
+## IconMaker.tscn
+**Назначение:** Генератор иконок для предметов инвентаря на основе 3D-моделей.
+
+### Архитектура и интеграция
+- IconMaker.tscn — это сцена типа Node3D, содержащая SubViewport, Camera3D, Pivot и окружение для рендеринга 3D-моделей в иконки.
+- Интегрируется с goat_inventory (генерация иконок для предметов), может использоваться отдельно для создания иконок любых 3D-объектов.
+- Основной метод: make_icon_texture(model_scene_path: String) -> Texture2D.
+
+### Основные методы
+- `make_icon_texture(model_scene_path: String) -> Texture2D` — загружает 3D-модель, размещает её на Pivot и возвращает текстуру SubViewport.
+
+### Пример расширения: изменение размера иконок
+```gdscript
+# Ваша сцена наследует IconMaker.tscn
+extends "res://addons/goat/helper_scenes/IconMaker.gd"
+
+@onready var sub_viewport = $SubViewport
+
+func _ready():
+    sub_viewport.size = Vector2i(128, 128) # Set icon size to 128x128
+```
+
+### Пример: добавление эффекта постобработки
+```gdscript
+@onready var camera = $SubViewport/Node3D/Camera3D
+
+func _ready():
+    var environment = camera.environment.duplicate()
+    environment.glow_enabled = true
+    environment.glow_intensity = 0.8
+    camera.environment = environment
+```
+
+### Best practices
+- Для генерации иконок используйте только оптимизированные 3D-модели без лишних полигонов.
+- Для изменения внешнего вида иконок используйте настройки SubViewport и Camera3D.
+- Не изменяйте оригинальный скрипт IconMaker.gd — используйте наследование.
+- Для пакетной генерации иконок вызывайте make_icon_texture в цикле для всех нужных моделей.
+
+### Архитектурные ограничения
+- IconMaker.tscn рассчитан на работу только с 3D-моделями, не поддерживает 2D-ресурсы.
+- Для корректной работы не изменяйте структуру Pivot и SubViewport без необходимости.
+- Размер иконки ограничен размером SubViewport.
+
+## RayCast3D.tscn
+**Назначение:** Специализированный RayCast для выбора и активации интерактивных объектов, поддерживает разные категории (окружение, инвентарь, "рука" и т.д.).
+
+- Интеграция: goat_interaction
+- Основные сигналы: object_selected, object_activated
+- Примеры расширения: добавление новых категорий, изменение логики выбора
+
+---
+
+**Best practices:**
+- Всегда указывайте, как сцена интегрируется с глобальными синглтонами.
+- Приводите реальные примеры кода для расширения и кастомизации.
+- Описывайте сигналы, которые можно использовать для связи с другими системами.
+- Не забывайте про архитектурные ограничения (например, про работу с категориями RayCast3D, обработку событий в Inventory).
+
+**Для подробных примеров и архитектурных деталей см. исходные скрипты в папке `addons/goat/helper_scenes/`.**

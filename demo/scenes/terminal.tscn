@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/goat/main_scenes/InteractiveScreen.gd" id="1"]
+
+[node name="Terminal" type="Node3D"]
+
+[node name="InteractiveScreen" type="StaticBody3D" parent="."]
+script = ExtResource("1")
+unique_name = "terminal_demo"
+content_size = Vector2(300, 120)
+emission_energy = 2.0
+unshaded = true
+
+[node name="Content" type="Control" parent="InteractiveScreen"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Label" type="Label" parent="InteractiveScreen/Content"]
+text = "Терминал: нажмите для взаимодействия!"
+anchor_right = 1.0
+anchor_bottom = 1.0
