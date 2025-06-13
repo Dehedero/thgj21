@@ -163,17 +163,40 @@ func _on_ExitButton_pressed():
 - `value_changed(section: String, key: String, value: Variant)` — изменилось значение параметра (от goat_settings).
 
 ### Пример расширения: добавление нового параметра
+
+**Важное архитектурное замечание:** В текущей версии GOAT система настроек не имеет механизма расширения без модификации кода аддона. Чтобы добавить новую настройку, вам потребуется внести изменения напрямую в `addons/goat/globals/goat_settings.gd`. Помните, что эти изменения могут быть утеряны при обновлении аддона.
+
+**Шаг 1: Добавление параметра в `DEFAULT_VALUES`**
+
+Откройте `addons/goat/globals/goat_settings.gd` и добавьте вашу настройку в массив `DEFAULT_VALUES`.
+
 ```gdscript
-# В goat_settings.gd
-DEFAULT_VALUES.append(["gameplay", "show_tutorials", true])
+# addons/goat/globals/goat_settings.gd
+var DEFAULT_VALUES := [
+	# ... существующие настройки ...
+	["gameplay", "show_tutorials", true], # Ваша новая настройка
+]
+```
 
-# В пользовательской сцене настроек
+**Шаг 2: Использование параметра в коде**
+
+Теперь вы можете использовать `goat_settings.get_value()` и `goat_settings.set_value()` для работы с вашей новой настройкой. Система автоматически создаст для нее сигнал `value_changed_gameplay_show_tutorials`.
+
+```gdscript
+# В коде вашей игры
+func _on_some_event():
+    if goat_settings.get_value("gameplay", "show_tutorials"):
+        # ... показать обучение ...
+
+# В вашей кастомной сцене настроек
 func _ready():
-    goat_settings.connect("value_changed_gameplay_show_tutorials", _on_show_tutorials_changed)
-
-func _on_show_tutorials_changed(_section, _key, value):
-    if value:
-        print("Tutorials enabled!")
+    var checkbox = $MyTutorialsCheckbox
+    # Устанавливаем начальное значение
+    checkbox.button_pressed = goat_settings.get_value("gameplay", "show_tutorials")
+    # Сохраняем значение при изменении
+    checkbox.toggled.connect(func(pressed):
+        goat_settings.set_value("gameplay", "show_tutorials", pressed)
+    )
 ```
 
 ### Пример: кастомизация UI
@@ -195,15 +218,14 @@ func _on_reset_progress_pressed():
 ```
 
 ### Best practices
-- Для добавления новых параметров используйте DEFAULT_VALUES в goat_settings.gd.
-- Для кастомизации интерфейса добавляйте свои элементы через наследование или дочерние узлы.
-- Подписывайтесь на сигналы value_changed только для нужных параметров.
-- Не изменяйте оригинальный скрипт Settings.gd — используйте наследование.
+- **Ввиду ограничений, основной "best practice" — создать свою сцену настроек, унаследованную от `Control`, и в ней реализовать всю логику для ваших кастомных параметров.** Вы можете по-прежнему использовать `goat_settings` для стандартных настроек (звук, графика), а для своих — реализовать собственную логику сохранения/загрузки.
+- Для кастомизации интерфейса стандартных настроек добавляйте свои элементы через наследование от `Settings.tscn` или его дочерних узлов.
+- Подписывайтесь на сигналы `value_changed` только для нужных параметров.
 
 ### Архитектурные ограничения
-- Settings.tscn рассчитан на работу только с goat_settings и goat.
-- Для корректной работы не изменяйте структуру Control без необходимости.
-- Все параметры должны быть зарегистрированы в DEFAULT_VALUES для корректного сохранения и загрузки.
+- **Главное ограничение:** `Settings.tscn` не поддерживает добавление новых, сохраняемых параметров без модификации исходного кода аддона `goat_settings.gd`.
+- Рассчитан на работу только с `goat_settings` и `goat`.
+- Все параметры должны быть зарегистрированы в `DEFAULT_VALUES` для корректного сохранения и загрузки.
 
 ## Subtitles.tscn
 **Назначение:** Вывод субтитров и вариантов ответов в диалогах, интеграция с goat_voice и goat_settings.
