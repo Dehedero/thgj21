@@ -1,15 +1,17 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=3 format=3 uid="uid://cabiiflibnhmp"]
 
-[ext_resource type="Script" path="res://addons/goat/main_scenes/InteractiveItem.gd" id="1"]
-[ext_resource type="Mesh" path="res://demo/resources/npc_mesh.tres" id="2"]
+[ext_resource type="Script" uid="uid://ca6e055376t8o" path="res://addons/goat/main_scenes/InteractiveItem.gd" id="1"]
+
+[sub_resource type="Resource" id="Resource_t46vx"]
+metadata/__load_path__ = "res://demo/resources/npc_mesh.tres"
 
 [node name="NPC" type="Node3D"]
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
-mesh = ExtResource("2")
+mesh = SubResource("Resource_t46vx")
 
-[node name="InteractiveItem" parent="." type="StaticBody3D"]
+[node name="InteractiveItem" type="StaticBody3D" parent="."]
 script = ExtResource("1")
 unique_name = "npc_demo"
-item_type = 4 # DIALOGUE
-inventory_item_name = "npc_demo_dialogue"
+item_type = 4
+#DIALOGUEinventory_item_name = "npc_demo_dialogue"

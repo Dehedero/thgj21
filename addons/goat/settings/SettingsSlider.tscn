@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://cdxcffk5chq6l" path="res://addons/goat/images/settings_slider_grabber.png" id="1"]
 [ext_resource type="StyleBox" path="res://addons/goat/styles/settings_grabber_area.tres" id="2"]
 [ext_resource type="StyleBox" path="res://addons/goat/styles/settings_slider.tres" id="3"]
-[ext_resource type="Script" path="res://addons/goat/settings/SettingsSlider.gd" id="4"]
+[ext_resource type="Script" uid="uid://bh2wje2s5q24b" path="res://addons/goat/settings/SettingsSlider.gd" id="4"]
 
 [node name="SettingsSlider" type="HSlider"]
 custom_minimum_size = Vector2(0, 16)

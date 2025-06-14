@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://cyx7u5m2w8vek"]
 
-[ext_resource type="Script" path="res://addons/goat/helper_scenes/ContextInventory.gd" id="1"]
+[ext_resource type="Script" uid="uid://gbp7harpy5j2" path="res://addons/goat/helper_scenes/ContextInventory.gd" id="1"]
 [ext_resource type="StyleBox" path="res://addons/goat/styles/inventory_slot_hover.tres" id="2"]
 [ext_resource type="StyleBox" path="res://addons/goat/styles/inventory_slot_normal.tres" id="3"]
 [ext_resource type="Texture2D" uid="uid://bf23e3vb0las8" path="res://addons/goat/images/cancel_icon.png" id="5"]

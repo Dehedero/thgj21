@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bywow06dp4vmt"]
 
-[ext_resource type="Script" path="res://game/scenes/main/Gameplay.gd" id="1"]
+[ext_resource type="Script" uid="uid://cu7wg6regqdd2" path="res://game/scenes/main/Gameplay.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://c4lmhavj60tqh" path="res://addons/goat/main_scenes/Player.tscn" id="2"]
 
 [node name="Gameplay" type="Node3D"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://bsv7k32eyyqqr"]
 
-[ext_resource type="Script" path="res://addons/goat/main_scenes/InteractiveScreen.gd" id="1"]
+[ext_resource type="Script" uid="uid://bcxfx7h50h2w6" path="res://addons/goat/main_scenes/InteractiveScreen.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://di7l52lqhdn4k" path="res://addons/goat/images/screen_interaction_icon.png" id="2"]
 [ext_resource type="Material" uid="uid://caxu4373mg8oc" path="res://addons/goat/materials/screen_interaction_icon.tres" id="3"]
 

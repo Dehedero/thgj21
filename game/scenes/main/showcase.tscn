@@ -1,10 +1,10 @@
 [gd_scene load_steps=10 format=3 uid="uid://c71lihh2x14rw"]
 
-[ext_resource type="Script" path="res://game/scenes/main/showcase.gd" id="1_d35xd"]
+[ext_resource type="Script" uid="uid://d3hv5ybprd3o1" path="res://game/scenes/main/showcase.gd" id="1_d35xd"]
 [ext_resource type="PackedScene" uid="uid://c4lmhavj60tqh" path="res://addons/goat/main_scenes/Player.tscn" id="1_vuqcq"]
-[ext_resource type="PackedScene" path="res://demo/scenes/inventory_item.tscn" id="key_demo"]
-[ext_resource type="PackedScene" path="res://demo/scenes/npc.tscn" id="npc_demo"]
-[ext_resource type="PackedScene" path="res://demo/scenes/terminal.tscn" id="terminal_demo"]
+[ext_resource type="PackedScene" uid="uid://cxkq8pmbv0k3x" path="res://demo/scenes/inventory_item.tscn" id="key_demo"]
+[ext_resource type="PackedScene" uid="uid://cabiiflibnhmp" path="res://demo/scenes/npc.tscn" id="npc_demo"]
+[ext_resource type="PackedScene" uid="uid://yusnh5ba0yq" path="res://demo/scenes/terminal.tscn" id="terminal_demo"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_g5jfv"]
 

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://biretg7wlc4sx"]
 
 [ext_resource type="Environment" uid="uid://dvmrow24o73ah" path="res://addons/goat/environments/inventory_environment.tres" id="1"]
-[ext_resource type="Script" path="res://addons/goat/helper_scenes/IconMaker.gd" id="2"]
+[ext_resource type="Script" uid="uid://ncr4x3daigmn" path="res://addons/goat/helper_scenes/IconMaker.gd" id="2"]
 
 [node name="IconMaker" type="Node3D"]
 script = ExtResource("2")

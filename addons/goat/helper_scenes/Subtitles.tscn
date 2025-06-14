@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://bfp8pkh3uyq0f"]
 
-[ext_resource type="Script" path="res://addons/goat/helper_scenes/Subtitles.gd" id="1"]
+[ext_resource type="Script" uid="uid://5nfcljtwatl5" path="res://addons/goat/helper_scenes/Subtitles.gd" id="1"]
 [ext_resource type="FontFile" uid="uid://dxkp5rfk21fkw" path="res://addons/goat/fonts/Tuffy.ttf" id="2_5446b"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5u3f8"]

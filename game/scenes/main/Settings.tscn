@@ -1,10 +1,12 @@
 [gd_scene load_steps=6 format=3 uid="uid://b1ajra8bndup"]
 
-[ext_resource type="Script" path="res://demo/scenes/main/Settings.gd" id="1"]
 [ext_resource type="StyleBox" path="res://addons/goat/styles/settings_background.tres" id="2"]
 [ext_resource type="PackedScene" uid="uid://d341ge06bejmu" path="res://addons/goat/settings/Settings.tscn" id="3"]
 [ext_resource type="FontFile" uid="uid://dxkp5rfk21fkw" path="res://addons/goat/fonts/Tuffy.ttf" id="3_q5qp6"]
 [ext_resource type="PackedScene" uid="uid://1ajdnlj7cg2l" path="res://addons/goat/settings/SettingsButton.tscn" id="4"]
+
+[sub_resource type="Resource" id="Resource_8gpxq"]
+metadata/__load_path__ = "res://demo/scenes/main/Settings.gd"
 
 [node name="Settings" type="CenterContainer"]
 anchors_preset = 15
@@ -12,7 +14,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1")
+script = SubResource("Resource_8gpxq")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 2

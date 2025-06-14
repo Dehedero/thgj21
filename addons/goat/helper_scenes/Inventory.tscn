@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://b464w5qqal0bx"]
 
-[ext_resource type="Script" path="res://addons/goat/helper_scenes/Inventory.gd" id="1"]
+[ext_resource type="Script" uid="uid://c6dqjc1em7vxl" path="res://addons/goat/helper_scenes/Inventory.gd" id="1"]
 [ext_resource type="Environment" uid="uid://dvmrow24o73ah" path="res://addons/goat/environments/inventory_environment.tres" id="2"]
 [ext_resource type="PackedScene" uid="uid://bhat28de4h0ds" path="res://addons/goat/helper_scenes/RayCast3D.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://ceodwhqhhotug" path="res://addons/goat/helper_scenes/InventoryItems.tscn" id="4"]

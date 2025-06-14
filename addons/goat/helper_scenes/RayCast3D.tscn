@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bhat28de4h0ds"]
 
-[ext_resource type="Script" path="res://addons/goat/helper_scenes/RayCast3D.gd" id="1"]
+[ext_resource type="Script" uid="uid://e6pmmnccn34y" path="res://addons/goat/helper_scenes/RayCast3D.gd" id="1"]
 
 [node name="RayCast3D" type="RayCast3D"]
 enabled = false

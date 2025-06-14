@@ -1,8 +1,12 @@
 [gd_scene load_steps=6 format=3 uid="uid://dtkof4nufccmt"]
 
-[ext_resource type="Script" path="res://demo/scenes/main/Credits.gd" id="1"]
 [ext_resource type="FontFile" uid="uid://dxkp5rfk21fkw" path="res://addons/goat/fonts/Tuffy.ttf" id="2_om2b1"]
-[ext_resource type="Texture2D" uid="uid://mr8cqcri7f56" path="res://demo/images/company_logo.png" id="3"]
+
+[sub_resource type="Resource" id="Resource_adfk5"]
+metadata/__load_path__ = "res://demo/scenes/main/Credits.gd"
+
+[sub_resource type="Resource" id="Resource_qtfen"]
+metadata/__load_path__ = "res://demo/images/company_logo.png"
 
 [sub_resource type="Animation" id="1"]
 resource_name = "show_credits"
@@ -22,7 +26,7 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_i8oiq"]
 _data = {
-"show_credits": SubResource("1")
+&"show_credits": SubResource("1")
 }
 
 [node name="Credits" type="Control"]
@@ -32,7 +36,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1")
+script = SubResource("Resource_adfk5")
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
@@ -67,7 +71,7 @@ autowrap_mode = 1
 [node name="Logo" type="TextureRect" parent="Center/VBoxContainer"]
 custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
-texture = ExtResource("3")
+texture = SubResource("Resource_qtfen")
 stretch_mode = 3
 
 [node name="SourceCode" type="Label" parent="Center/VBoxContainer"]

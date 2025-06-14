@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=2 format=3 uid="uid://yusnh5ba0yq"]
 
-[ext_resource type="Script" path="res://addons/goat/main_scenes/InteractiveScreen.gd" id="1"]
+[ext_resource type="Script" uid="uid://bcxfx7h50h2w6" path="res://addons/goat/main_scenes/InteractiveScreen.gd" id="1"]
 
 [node name="Terminal" type="Node3D"]
 

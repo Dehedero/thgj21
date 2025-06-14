@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://ceodwhqhhotug"]
 
-[ext_resource type="Script" path="res://addons/goat/helper_scenes/InventoryItems.gd" id="1"]
+[ext_resource type="Script" uid="uid://b1b7pdy3h3shu" path="res://addons/goat/helper_scenes/InventoryItems.gd" id="1"]
 [ext_resource type="StyleBox" path="res://addons/goat/styles/inventory_slot_hover.tres" id="2"]
 [ext_resource type="StyleBox" path="res://addons/goat/styles/inventory_slot_pressed.tres" id="3"]
 [ext_resource type="StyleBox" path="res://addons/goat/styles/inventory_slot_normal.tres" id="4"]

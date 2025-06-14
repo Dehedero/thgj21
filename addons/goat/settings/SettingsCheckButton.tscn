@@ -3,7 +3,7 @@
 [ext_resource type="FontFile" uid="uid://dxkp5rfk21fkw" path="res://addons/goat/fonts/Tuffy.ttf" id="1_eos8h"]
 [ext_resource type="Texture2D" uid="uid://bx7my5ir0ldon" path="res://addons/goat/images/settings_check_button_off.png" id="2"]
 [ext_resource type="Texture2D" uid="uid://cya3c77vxcnsp" path="res://addons/goat/images/settings_check_button_on.png" id="3"]
-[ext_resource type="Script" path="res://addons/goat/settings/SettingsCheckButton.gd" id="4"]
+[ext_resource type="Script" uid="uid://bjnsqoa4ycjs2" path="res://addons/goat/settings/SettingsCheckButton.gd" id="4"]
 
 [node name="SettingsCheckButton" type="CheckButton"]
 custom_minimum_size = Vector2(0, 50)

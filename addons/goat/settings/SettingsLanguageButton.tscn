@@ -3,7 +3,7 @@
 [ext_resource type="StyleBox" path="res://addons/goat/styles/settings_button_hover.tres" id="1"]
 [ext_resource type="FontFile" uid="uid://dxkp5rfk21fkw" path="res://addons/goat/fonts/Tuffy.ttf" id="1_5c5eu"]
 [ext_resource type="StyleBox" path="res://addons/goat/styles/settings_button_normal.tres" id="3"]
-[ext_resource type="Script" path="res://addons/goat/settings/SettingsLanguageButton.gd" id="4"]
+[ext_resource type="Script" uid="uid://d0ndgxhvr8e7x" path="res://addons/goat/settings/SettingsLanguageButton.gd" id="4"]
 
 [sub_resource type="ImageTexture" id="1"]
 

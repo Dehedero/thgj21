@@ -1,15 +1,17 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3 uid="uid://cxkq8pmbv0k3x"]
 
-[ext_resource type="Script" path="res://addons/goat/main_scenes/InteractiveItem.gd" id="1"]
-[ext_resource type="Mesh" path="res://demo/resources/key_mesh.tres" id="2"]
+[ext_resource type="Script" uid="uid://ca6e055376t8o" path="res://addons/goat/main_scenes/InteractiveItem.gd" id="1"]
+
+[sub_resource type="Resource" id="Resource_747xi"]
+metadata/__load_path__ = "res://demo/resources/key_mesh.tres"
 
 [node name="KeyDemo" type="Node3D"]
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
-mesh = ExtResource("2")
+mesh = SubResource("Resource_747xi")
 
-[node name="InteractiveItem" parent="." type="StaticBody3D"]
+[node name="InteractiveItem" type="StaticBody3D" parent="."]
 script = ExtResource("1")
 unique_name = "key_demo"
-item_type = 2 # INVENTORY
-inventory_item_name = "key_demo"
+item_type = 2
+#INVENTORYinventory_item_name = "key_demo"

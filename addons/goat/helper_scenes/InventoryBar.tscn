@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://06q5uaw87s6g"]
 
-[ext_resource type="Script" path="res://addons/goat/helper_scenes/InventoryBar.gd" id="1"]
+[ext_resource type="Script" uid="uid://b8dv5pjf1eq02" path="res://addons/goat/helper_scenes/InventoryBar.gd" id="1"]
 [ext_resource type="StyleBox" path="res://addons/goat/styles/inventory_slot_normal.tres" id="2"]
 
 [sub_resource type="Animation" id="1"]
@@ -21,7 +21,7 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2mber"]
 _data = {
-"show": SubResource("1")
+&"show": SubResource("1")
 }
 
 [node name="InventoryBar" type="Control"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://few834mpf2ju"]
 
-[ext_resource type="Script" path="res://addons/goat/default/Settings.gd" id="1_s3n40"]
+[ext_resource type="Script" uid="uid://kloyk6tpabr6" path="res://addons/goat/default/Settings.gd" id="1_s3n40"]
 [ext_resource type="StyleBox" path="res://addons/goat/styles/settings_background.tres" id="2_u2ket"]
 [ext_resource type="FontFile" uid="uid://dxkp5rfk21fkw" path="res://addons/goat/fonts/Tuffy.ttf" id="3_bxwal"]
 [ext_resource type="PackedScene" uid="uid://d341ge06bejmu" path="res://addons/goat/settings/Settings.tscn" id="4_e4qsy"]
