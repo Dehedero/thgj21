@@ -121,21 +121,29 @@ func _ready():
 # Ваша сцена наследует ContextInventory.tscn
 extends "res://addons/goat/helper_scenes/ContextInventory.gd"
 
+# Переопределяем оригинальный метод, чтобы добавить свою логику
 func _on_item_button_pressed(item_index):
     var item_name = goat_inventory.get_items()[item_index]
-    var environment_object = goat_interaction.get_selected_object("environment")
-    # Custom logic: use item only if environment_object is a special type
-    if environment_object == "special_terminal":
-        print("Using", item_name, "on special terminal!")
-        # Custom action here
+    # Получаем объект, на который игрок смотрел перед открытием меню
+    var target_object_name = goat_interaction.get_selected_object("default")
+
+    # Пример кастомной логики: если ключ используется на запертой двери
+    if item_name == "my_key" and target_object_name == "locked_door":
+        print("Открываем дверь с помощью ключа!")
+        # Здесь может быть ваша логика: проиграть звук, анимацию и т.д.
+        goat_inventory.remove_item("my_key") # Удаляем ключ
+        # Не забываем закрыть меню
+        _go_back_to_exploring()
     else:
+        # Если это не наша особая комбинация, вызываем стандартную логику
         super._on_item_button_pressed(item_index)
 ```
 
 ### Пример: обработка выхода из меню
 ```gdscript
 func _on_ExitButton_pressed():
-    print("Context inventory closed")
+    print("Context inventory closed, playing a sound.")
+    # goat_audio_bus.play("res://path/to/sound.ogg") # Пример дополнительного действия
     _go_back_to_exploring()
 ```
 
@@ -251,6 +259,7 @@ extends "res://addons/goat/helper_scenes/Subtitles.gd"
 func _ready():
     super._ready()
     # Change font and color
+    # ВАЖНО: Замените путь на реальный путь к вашему шрифту
     var custom_font = preload("res://game/fonts/MyFont.tres")
     bottom_text.add_theme_font_override("font", custom_font)
     bottom_text.add_theme_color_override("font_color", Color(1, 0.8, 0.2))
@@ -258,17 +267,21 @@ func _ready():
 
 ### Пример: добавление кастомной логики для вариантов ответа
 ```gdscript
+# Ваша сцена наследует Subtitles.tscn
+extends "res://addons/goat/helper_scenes/Subtitles.gd"
+
+# Переопределяем оригинальный метод, чтобы изменить текст ответов
 func show_responses(responses: Array) -> void:
+    # Создаем новый массив для измененных ответов
+    var modified_responses: Array = []
     for response in responses:
-        var response_button: Button = example_response.duplicate()
-        response_button.text = response.text
-        response_button.pressed.connect(func():
-            print("Selected response:", response.text)
-            goat_voice.select_response(response)
-        )
-        responses_container.add_child(response_button)
-        response_button.show()
-    bottom_text.hide()
+        var new_response = response.duplicate()
+        # Добавляем префикс к каждому ответу
+        new_response.text = "[Спросить] " + new_response.text
+        modified_responses.append(new_response)
+
+    # Вызываем оригинальный метод, но с измененными данными
+    super.show_responses(modified_responses)
 ```
 
 ### Best practices
@@ -298,17 +311,19 @@ func show_responses(responses: Array) -> void:
 # Ваша сцена наследует IconMaker.tscn
 extends "res://addons/goat/helper_scenes/IconMaker.gd"
 
-@onready var sub_viewport = $SubViewport
-
 func _ready():
-    sub_viewport.size = Vector2i(128, 128) # Set icon size to 128x128
+    # Используем синтаксис уникальных имен для доступа к узлу
+    %SubViewport.size = Vector2i(128, 128) # Set icon size to 128x128
 ```
 
 ### Пример: добавление эффекта постобработки
 ```gdscript
-@onready var camera = $SubViewport/Node3D/Camera3D
+# Ваша сцена наследует IconMaker.tscn
+extends "res://addons/goat/helper_scenes/IconMaker.gd"
 
 func _ready():
+    # Используем синтаксис уникальных имен для доступа к камере
+    var camera = %Camera3D
     var environment = camera.environment.duplicate()
     environment.glow_enabled = true
     environment.glow_intensity = 0.8

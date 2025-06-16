@@ -57,6 +57,39 @@ func _on_object_activated(object_name, _point):
         DialogueManager.start_dialogue(load("res://game/dialogues/npc_1.dialogue"))
 ```
 
+## Интеграция с goat_voice (Рекомендуемый способ)
+
+Хотя `DialogueManager` можно использовать напрямую для управления нелинейной логикой, для полноценных озвученных диалогов с субтитрами и вариантами ответов рекомендуется использовать его через синглтон `goat_voice`. Эта система выступает в роли "движка", который использует `DialogueManager` под капотом, но добавляет автоматическое воспроизведение звука и интеграцию с UI (`Subtitles.tscn`).
+
+**Основной рабочий процесс:**
+
+1.  **Настройте персонажа в Dialogue Manager**:
+    *   В редакторе диалогов (`Dialogue` -> `Characters`) создайте нового персонажа.
+    *   В поле `Scene` укажите путь к сцене-прослойке: `res://addons/goat/dialogues/goat_voice_dialogue.tscn`. Эта сцена перенаправляет все вызовы от `DialogueManager` напрямую в синглтон `goat_voice`.
+
+2.  **Свяжите озвучку с репликами**:
+    *   В вашем `.dialogue` файле каждая реплика должна иметь уникальный `translation_key`.
+    *   Аудиофайл с озвучкой (`.ogg` или `.wav`) должен лежать в `res://game/goat/voice/` и называться **в точности как `translation_key`**. Например, для реплики с ключом `npc_greeting` аудиофайл должен называться `npc_greeting.ogg`.
+
+3.  **Запустите диалог через `goat_voice`**:
+    *   Вместо `DialogueManager.start_dialogue()` используйте `goat_voice.start_dialogue()`.
+
+```gdscript
+# Пример: Запуск диалога при активации NPC
+func _on_object_activated(object_name, _point):
+    if object_name == "friendly_npc" and not goat_voice.is_playing():
+        # Запускаем диалог. `goat_voice` автоматически:
+        # 1. Загрузит мастер-файл `res://game/goat/dialogues/goat.dialogue`.
+        # 2. Найдёт реплику с ID "npc_greeting".
+        # 3. Найдёт и проиграет аудио `res://game/goat/voice/npc_greeting.ogg`.
+        # 4. Пошлёт сигнал для отображения субтитров и вариантов ответа.
+        goat_voice.start_dialogue("npc_greeting")
+```
+
+При таком подходе `goat_voice` и `Subtitles.tscn` берут на себя всю работу по отображению текста, вариантов ответа и проигрыванию звука, в то время как `DialogueManager` по-прежнему отвечает за логику ветвлений и условий.
+
+Подробнее о возможностях озвучки см. [Работа со звуком и озвучкой](./audio_and_voice.md).
+
 ## Кастомизация и расширение
 
 - Можно создавать собственные UI-окна для отображения диалогов, подписываясь на сигналы `DialogueManager`.
